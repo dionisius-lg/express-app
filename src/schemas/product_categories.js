@@ -8,11 +8,12 @@ const schema = {
                     err.message = `"${err.local.key}" format is invalid.`
                 }
             })
-    
+
             return errs
         }),
-        email: Joi.string().email().allow(null).allow("").optional(),
-        city: Joi.string().allow(null).allow("").optional()
+        created_date: Joi.date().format('YYYY-MM-DD HH:mm:ss').utc().allow(null),
+        created_user_id: Joi.number().min(1).allow(null),
+        is_active: Joi.string().valid('0','1').allow(null)
     }),
     update: Joi.object().keys({
         name: Joi.string().required().max(100).regex(/^[a-zA-Z0-9 ]*$/).error(errs => {
@@ -21,11 +22,12 @@ const schema = {
                     err.message = `"${err.local.key}" format is invalid.`
                 }
             })
-    
+
             return errs
         }),
-        email: Joi.string().email().allow(null).allow("").optional(),
-        city: Joi.string().allow(null).allow("").optional()
+        updated_date: Joi.date().format('YYYY-MM-DD HH:mm:ss').utc().allow(null),
+        updated_user_id: Joi.number().min(1).allow(null),
+        is_active: Joi.string().valid('0','1').allow(null)
     })
 }
 

@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
     res.send({app: 'Express App'})
 })
 
-fs.readdirSync(routePath).forEach(function (file) {
+fs.readdirSync(routePath).forEach((file) => {
     // not including this file
     if (file != scriptName) {
         // get only filename, cut the file format (.js)

@@ -32,7 +32,6 @@ router.post('/login', async (req, res, next) => {
 
         if (rows.length > 0) {
             if (bcrypt.compareSync(password, rows[0].password)) {
-                console.log(rows[0].password, 'asd')
                 req.session.isLoggedIn = true
                 req.session.user = {
                     id: rows[0].id,
@@ -41,10 +40,12 @@ router.post('/login', async (req, res, next) => {
                     email: rows[0].email,
                 }
 
-                return res.redirect('/students')
+                return res.redirect('/product_categories')
             }
 
             req.flash('error', 'Invalid credentials')
+        } else {
+            req.flash('error', 'User not found')
         }
 
         res.redirect('/auth')

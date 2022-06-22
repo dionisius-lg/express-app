@@ -1,8 +1,8 @@
 const router = require('express').Router()
 const _ = require('lodash')
 const verify = require('./../configs/verify')
-const studentsModel = require('./../models/students')
-const studentsSchema = require('./../schemas/students')
+const productCategoriesModel = require('./../models/product_categories')
+const productCategoriesSchema = require('./../schemas/product_categories')
 const { badRequest } = require('./../helpers/response')
 const { validator } = require('./../helpers/general')
 const pagination = require('./../helpers/pagination')
@@ -17,26 +17,30 @@ router.get('/', verify.isLogin, async (req, res, next) => {
     }
 
     const getData = {
-        students: await studentsModel.getAll(conditions)
+        product_categories: await productCategoriesModel.getAll(conditions)
     }
 
     let asd = pagination({
         page: query.page || 1,
-        total: getData.students.total_data,
+        total: getData.product_categories.total_data,
         limit: limitData,
-        paging: getData.students.paging || {}
+        paging: getData.product_categories.paging || {}
     })
 
     return res.render('adminLayout', {
-        pageTitle: 'Students',
-        template: 'students/index.ejs',
+        pageTitle: 'Product Categories',
+        template: 'product_categories/index.ejs',
         ...getData
     })
 })
 
 router.post('/create', async (req, res, next) => {
     const { body } = req
-    const validation = validator(studentsSchema.create, body)
+    const validation = validator(productCategoriesSchema.create, body)
+
+    if (!('is_active' in body)) {
+        body.is_active = "1"
+    }
 
     if (validation.error) {
         return res.json(badRequest({
@@ -44,7 +48,7 @@ router.post('/create', async (req, res, next) => {
         }))
     }
 
-    const result = await studentsModel.insert(body)
+    const result = await productCategoriesModel.insert(body)
 
     if (result.success) {
         req.flash('success', 'Data has been saved')
@@ -55,7 +59,7 @@ router.post('/create', async (req, res, next) => {
 
 router.get('/detail/:id', verify.isLogin, async (req, res, next) => {
     const { params } = req
-    const result = await studentsModel.getDetail({
+    const result = await productCategoriesModel.getDetail({
         id: params.id
     })
 
@@ -64,7 +68,11 @@ router.get('/detail/:id', verify.isLogin, async (req, res, next) => {
 
 router.post('/update/:id', async (req, res, next) => {
     const { body, params } = req
-    const validation = validator(studentsSchema.update, body)
+    const validation = validator(productCategoriesSchema.update, body)
+
+    if (!('is_active' in body)) {
+        body.is_active = '0'
+    }
 
     if (validation.error) {
         return res.json(badRequest({
@@ -72,7 +80,7 @@ router.post('/update/:id', async (req, res, next) => {
         }))
     }
 
-    const result = await studentsModel.update(body, {
+    const result = await productCategoriesModel.update(body, {
         id: params.id
     })
 
@@ -85,7 +93,7 @@ router.post('/update/:id', async (req, res, next) => {
 
 router.get('/delete/:id', async (req, res, next) => {
     const { params } = req
-    const result = await studentsModel.delete({
+    const result = await productCategoriesModel.delete({
         id: params.id
     })
 

@@ -1,5 +1,7 @@
 const _ = require('lodash')
 const moment = require('moment-timezone')
+const { isEmpty } = require('./general')
+
 moment.tz.setDefault('Asia/Jakarta')
 
 exports.success = ({ total_data, limit, data, page }) => {
@@ -29,85 +31,109 @@ exports.success = ({ total_data, limit, data, page }) => {
     return result
 }
 
-exports.error = (message = false) => {
+exports.error = ({ message, error }) => {
     let result = {
 		request_time: moment().unix(),
 		success: false,
         message: "Internal server error"
 	}
 
-    if (message && !_.isEmpty(message)) {
+    if (message && !isEmpty(message) && _.isString(message)) {
         result.message += `. ${message}`
+    }
+
+    if (error && !isEmpty(error) && _.isObject(error)) {
+        result.error = error
     }
 
     return result
 }
 
-exports.notFound = (message = false) => {
+exports.notFound = ({ message, error }) => {
     let result = {
 		request_time: moment().unix(),
 		success: false,
         message: "Not Found"
 	}
 
-    if (message && !_.isEmpty(message)) {
+    if (message && !isEmpty(message) && _.isString(message)) {
         result.message += `. ${message}`
+    }
+
+    if (error && !isEmpty(error) && _.isObject(error)) {
+        result.error = error
     }
 
     return result
 }
 
-exports.notAllowed = (message = false) => {
+exports.notAllowed = ({ message, error }) => {
     let result = {
 		request_time: moment().unix(),
 		success: false,
         message: "Not allowed"
 	}
 
-    if (message && !_.isEmpty(message)) {
+    if (message && !isEmpty(message) && _.isString(message)) {
         result.message += `. ${message}`
+    }
+
+    if (error && !isEmpty(error) && _.isObject(error)) {
+        result.error = error
     }
 
     return result
 }
 
-exports.badRequest = (message = false) => {
+exports.badRequest = ({ message, error }) => {
     let result = {
 		request_time: moment().unix(),
 		success: false,
         message: "Bad request"
 	}
 
-    if (message && !_.isEmpty(message)) {
+    if (message && !isEmpty(message) && _.isString(message)) {
         result.message += `. ${message}`
+    }
+
+    if (error && !isEmpty(error) && _.isObject(error)) {
+        result.error = error
     }
 
     return result
 }
 
-exports.unauthorized = (message = false) => {
+exports.unauthorized = ({ message, error }) => {
     let result = {
 		request_time: moment().unix(),
 		success: false,
         message: "Unauthorized"
 	}
 
-    if (message && !_.isEmpty(message)) {
+    if (message && !isEmpty(message) && _.isString(message)) {
         result.message += `. ${message}`
+    }
+
+    if (error && !isEmpty(error) && _.isObject(error)) {
+        result.error = error
     }
 
     return result
 }
 
-exports.forbidden = (message = false) => {
+exports.forbidden = ({ message, error }) => {
     let result = {
 		request_time: moment().unix(),
 		success: false,
         message: "Forbidden"
 	}
 
-    if (message && !_.isEmpty(message)) {
+    if (message && !isEmpty(message) && _.isString(message)) {
         result.message += `. ${message}`
+    }
+
+    if (error && !isEmpty(error) && _.isObject(error)) {
+        result.error = error
     }
 
     return result

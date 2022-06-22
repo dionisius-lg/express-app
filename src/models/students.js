@@ -1,5 +1,5 @@
-const dbQueryHelper = require('./../helpers/dbQuery')
-const responseHelper = require('./../helpers/response')
+const { getAll, getDetail, insertData, updateData, deleteData } = require('./../helpers/dbQuery')
+const { success, error, notFound, notAllowed, badRequest, unauthorized } = require('./../helpers/response')
 const table = 'students'
 
 exports.getAll = async (conditions) => {
@@ -7,54 +7,53 @@ exports.getAll = async (conditions) => {
         'like': ['name', 'email', 'city']
     }
 
-    const result = await dbQueryHelper.getAll({ table, conditions, conditionTypes })
+    const result = await getAll({ table, conditions, conditionTypes })
 
     if (result.total_data > 0) {
-        return responseHelper.success(result)
+        return success(result)
     }
 
-    return responseHelper.notFound()
+    return notFound({})
 }
 
 exports.getDetail = async (conditions) => {
-    console.log(conditions, 'asd')
-    const result = await dbQueryHelper.getDetail({table, conditions})
+    const result = await getDetail({table, conditions})
 
     if (result.total_data > 0) {
-        return responseHelper.success(result)
+        return success(result)
     }
 
-    return responseHelper.notFound()
+    return notFound({})
 }
 
 exports.insert = async (data) => {
     const protectedColumns = ['id']
-    const result = await dbQueryHelper.insertData({ table, data, protectedColumns })
+    const result = await insertData({ table, data, protectedColumns })
 
     if (result.total_data > 0) {
-        return responseHelper.success(result)
+        return success(result)
     }
 
-    return responseHelper.error()
+    return error({})
 }
 
 exports.update = async (data, conditions) => {
     const protectedColumns = ['id']
-    const result = await dbQueryHelper.updateData({ table, data, conditions, protectedColumns })
+    const result = await updateData({ table, data, conditions, protectedColumns })
 
     if (result.total_data > 0) {
-        return responseHelper.success(result)
+        return success(result)
     }
 
-    return responseHelper.error()
+    return error({})
 }
 
 exports.delete = async (conditions) => {
-    const result = await dbQueryHelper.deleteData({ table, conditions })
+    const result = await deleteData({ table, conditions })
 
     if (result.total_data > 0) {
-        return responseHelper.success(result)
+        return success(result)
     }
 
-    return responseHelper.error()
+    return error({})
 }

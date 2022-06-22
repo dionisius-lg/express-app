@@ -12,6 +12,7 @@
   "dependencies": {
     "@joi/date": "^2.1.0",
     "bcrypt": "^5.0.0",
+    "classnames": "^2.3.1",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.1",
     "ejs": "^3.1.8",

@@ -4,23 +4,15 @@
             <div class="card-header">
                 <h3 class="card-title">Filter Data</h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-info rounded-0 btn-sm btn-add" onclick="addData()">Add New</button>
+                    <button type="button" class="btn btn-info rounded-0 btn-add" onclick="addData()">Add New</button>
                 </div>
             </div>
             <div class="card-body">
                 <form action="<%= currentUrl %>" method="get" autocomplete="off">
                     <div class="form-row">
                         <div class="form-group col-md-2">
-                            <label>Username</label>
-                            <input type="text" class="form-control rounded-0" name="username" value="<%= query.username %>">
-                        </div>
-                        <div class="form-group col-md-2">
-                            <label>Email</label>
-                            <input type="text" class="form-control rounded-0" name="email" value="<%= query.email %>">
-                        </div>
-                        <div class="form-group col-md-2">
-                            <label>Fullname</label>
-                            <input type="text" class="form-control rounded-0" name="fullname" value="<%= query.fullname %>">
+                            <label>Name</label>
+                            <input type="text" class="form-control rounded-0" name="name" value="<%= query.name %>">
                         </div>
                     </div>
                     <div class="row">
@@ -40,23 +32,21 @@
                     <thead>
                         <tr>
                             <th class="text-nowrap" scope="col">#</th>
-                            <th class="text-nowrap" scope="col">Username</th>
-                            <th class="text-nowrap" scope="col">Email</th>
-                            <th class="text-nowrap" scope="col">Fullname</th>
+                            <th class="text-nowrap" scope="col">Name</th>
+                            <th class="text-nowrap" scope="col">Is Active</th>
                             <th class="text-nowrap" scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <% if (users.total_data > 0) { %>
-                            <% users.data.map((row, i) => { %>
+                        <% if (product_categories.total_data > 0) { %>
+                            <% product_categories.data.map((row, i) => { %>
                                 <tr>
                                     <td scope="row"><%= (i+1) %></td>
-                                    <td><%= row.username %></td>
-                                    <td><%= row.email %></td>
-                                    <td><%= row.fullname %></td>
+                                    <td><%= row.name %></td>
+                                    <td><i class="fas <%= row.is_active === 1 ? 'fa-check' : 'fa-times' %>"></i></td>
                                     <td>
-                                        <button type="button" class="btn btn-warning rounded-0 btn-sm btn-detail" onclick="detailData('<%= row.id %>')">Detail</button>
-                                        <button type="button" class="btn btn-danger rounded-0 btn-sm btn-delete" onclick="deleteData('<%= row.id %>')">Delete</button>
+                                        <button type="button" class="btn btn-warning rounded-0 btn-sm btn-detail" onclick="detailData('<%= row.id %>')"><i class="far fa-edit fa-fw"></i></button>
+                                        <button type="button" class="btn btn-danger rounded-0 btn-sm btn-delete" onclick="deleteData('<%= row.id %>')"><i class="far fa-trash-alt fa-fw"></i></button>
                                     </td>
                                 </tr>
                             <% }) %>
@@ -74,7 +64,7 @@
 </div>
 
 <div class="modal fade" id="modalData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-scrollable modal-sm">
         <form class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Modal title</h5>
@@ -84,19 +74,15 @@
             </div>
             <div class="modal-body row">
                 <div class="form-group col-md-12">
-                    <label>Username</label>
-                    <input type="text" name="username" class="form-control" autofocus>
+                    <label>Name</label>
+                    <input type="text" name="name" class="form-control" autofocus>
                     <span class="invalid-feedback"></span>
                 </div>
                 <div class="form-group col-md-12">
-                    <label>Email</label>
-                    <input type="text" name="email" class="form-control">
-                    <span class="invalid-feedback"></span>
-                </div>
-                <div class="form-group col-md-12">
-                    <label>Fullname</label>
-                    <input type="text" name="fullname" class="form-control">
-                    <span class="invalid-feedback"></span>
+                    <div class="icheck-primary">
+                        <input type="checkbox" name="is_active" id="isActive" value="1">
+                        <label for="isActive">Active</label>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -159,6 +145,7 @@
         formData.attr({'action': '<%= currentUrl %>/create'})
         formData.find('input, select, textarea').removeClass('is-invalid')
         formData.find('.invalid-feedback').empty()
+        formData.find('[name="is_active"').prop('checked', true).attr('disabled', true)
 
         modalData.find('.modal-header .modal-title').html('Add New Data')
         modalData.modal({'backdrop': 'static', 'keyboard': false, 'show': true})
@@ -174,12 +161,17 @@
                     formData[0].reset()
                     formData.attr({'action': `<%= currentUrl %>/update/${id}`})
                     formData.find('.modal-title').html('Detail Data')
+                    formData.find('[name="is_active"').attr('disabled', false)
                 },
                 success: (res) => {
                     if (res.success) {
                         if (res.total_data > 0) {
                             $.each(res.data, (key, val) => {
-                                formData.find(`[name="${key}"`).val(val)
+                                if (['is_active'].indexOf(key) >= 0) {
+                                    formData.find(`[name="${key}"`).prop('checked', val == 1 ? true : false)
+                                } else {
+                                    formData.find(`[name="${key}"`).val(val)
+                                }
                             })
 
                             modalData.modal({'backdrop': 'static', 'keyboard': false, 'show': true})
