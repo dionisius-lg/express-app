@@ -1,7 +1,7 @@
 {
-  "name": "express-app",
+  "name": "express-pos",
   "version": "1.0.0",
-  "description": "express app",
+  "description": "express point of sale",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

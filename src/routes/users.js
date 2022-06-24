@@ -1,10 +1,10 @@
 const router = require('express').Router()
 const _ = require('lodash')
 const verify = require('./../configs/verify')
-const usersModel = require('./../models/users')
+const usersController = require('./../controllers/users')
 // const usersSchema = require('./../schemas/users')
 const { badRequest } = require('./../helpers/response')
-const { validator } = require('./../helpers/general')
+const { validator } = require('./../helpers/common')
 const pagination = require('./../helpers/pagination')
 
 router.get('/', verify.isLogin, async (req, res, next) => {
@@ -17,7 +17,7 @@ router.get('/', verify.isLogin, async (req, res, next) => {
     }
 
     const getData = {
-        users: await usersModel.getAll(conditions)
+        users: await usersController.getAll(conditions)
     }
 
     let asd = pagination({
@@ -44,7 +44,7 @@ router.post('/create', async (req, res, next) => {
     //     }))
     // }
 
-    const result = await usersModel.insert(body)
+    const result = await usersController.insert(body)
 
     if (result.success) {
         req.flash('success', 'Data has been saved')
@@ -55,7 +55,7 @@ router.post('/create', async (req, res, next) => {
 
 router.get('/detail/:id', verify.isLogin, async (req, res, next) => {
     const { params } = req
-    const result = await usersModel.getDetail({
+    const result = await usersController.getDetail({
         id: params.id
     })
 
@@ -72,7 +72,7 @@ router.post('/update/:id', async (req, res, next) => {
     //     }))
     // }
 
-    const result = await usersModel.update(body, {
+    const result = await usersController.update(body, {
         id: params.id
     })
 
@@ -85,7 +85,7 @@ router.post('/update/:id', async (req, res, next) => {
 
 router.get('/delete/:id', async (req, res, next) => {
     const { params } = req
-    const result = await usersModel.delete({
+    const result = await usersController.delete({
         id: params.id
     })
 

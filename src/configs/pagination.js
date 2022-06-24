@@ -1,12 +1,12 @@
 exports.pageDots = "..."
 
-exports.pageRange = ({ total = 0, limit = 1, current = 0, sibling = 1 }) => {
+exports.pageRange = ({ total_data = 0, limit = 1, current = 0, sibling = 1 }) => {
     const range = (start, end) => {
         let length = end - start + 1
         return Array.from({ length }, (_, idx) => idx + start)
     }
 
-    const totalPageCount = Math.ceil(total / limit)
+    const totalPageCount = Math.ceil(total_data / limit)
 
     // Pages count is determined as sibling + firstPage + lastPage + currentPage + 2 * pageDots
     const totalPageNumbers = sibling + 5
@@ -56,13 +56,13 @@ exports.pageRange = ({ total = 0, limit = 1, current = 0, sibling = 1 }) => {
     }
 }
 
-exports.pageInfo = ({ total, limit, current }) => {
+exports.pageInfo = ({ total_data, limit, current }) => {
     let firstIndex = ((parseInt(current) * parseInt(limit)) - parseInt(limit)) + 1
     let lastIndex = parseInt(current) * parseInt(limit)
     let index = []
 
-    if (lastIndex > total) {
-        lastIndex = total
+    if (lastIndex > total_data) {
+        lastIndex = total_data
     }
 
     for (let i = firstIndex; i <= lastIndex; i++) {
@@ -72,7 +72,7 @@ exports.pageInfo = ({ total, limit, current }) => {
     return {
         lowest: firstIndex,
         highest: lastIndex,
-        total: total,
+        total: total_data,
         index: index
     }
 }

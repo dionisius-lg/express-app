@@ -1,36 +1,29 @@
 const router = require('express').Router()
 const _ = require('lodash')
 const verify = require('./../configs/verify')
-const productCategoriesModel = require('./../models/product_categories')
+const productCategoriesController = require('./../controllers/product_categories')
 const productCategoriesSchema = require('./../schemas/product_categories')
 const { badRequest } = require('./../helpers/response')
-const { validator } = require('./../helpers/general')
+const { validator, currentUrl, fullUrl } = require('../helpers/common')
 const pagination = require('./../helpers/pagination')
 
 router.get('/', verify.isLogin, async (req, res, next) => {
     const { query, params } = req
-    const limitData = 20
+    const limit = 10
 
-    const conditions = {
-        ...query,
-        limit: limitData
+    let result = {
+        product_categories: await productCategoriesController.getAll({ limit: limit, ...query })
     }
 
-    const getData = {
-        product_categories: await productCategoriesModel.getAll(conditions)
-    }
-
-    let asd = pagination({
-        page: query.page || 1,
-        total: getData.product_categories.total_data,
-        limit: limitData,
-        paging: getData.product_categories.paging || {}
+    result.pagination = pagination({
+        data: result.product_categories || {},
+        opt: { url: currentUrl(req), limit: limit, ...query }
     })
 
     return res.render('adminLayout', {
         pageTitle: 'Product Categories',
         template: 'product_categories/index.ejs',
-        ...getData
+        ...result
     })
 })
 
@@ -48,7 +41,7 @@ router.post('/create', async (req, res, next) => {
         }))
     }
 
-    const result = await productCategoriesModel.insert(body)
+    const result = await productCategoriesController.insert(body)
 
     if (result.success) {
         req.flash('success', 'Data has been saved')
@@ -59,7 +52,15 @@ router.post('/create', async (req, res, next) => {
 
 router.get('/detail/:id', verify.isLogin, async (req, res, next) => {
     const { params } = req
-    const result = await productCategoriesModel.getDetail({
+    const validation = validator(productCategoriesSchema.detail, params)
+
+    if (validation.error) {
+        return res.json(badRequest({
+            error: validation.error
+        }))
+    }
+
+    const result = await productCategoriesController.getDetail({
         id: params.id
     })
 
@@ -68,7 +69,15 @@ router.get('/detail/:id', verify.isLogin, async (req, res, next) => {
 
 router.post('/update/:id', async (req, res, next) => {
     const { body, params } = req
-    const validation = validator(productCategoriesSchema.update, body)
+    let validation = validator(productCategoriesSchema.detail, params)
+
+    if (validation.error) {
+        return res.json(badRequest({
+            error: validation.error
+        }))
+    }
+
+    validation = validator(productCategoriesSchema.update, body)
 
     if (!('is_active' in body)) {
         body.is_active = '0'
@@ -80,7 +89,7 @@ router.post('/update/:id', async (req, res, next) => {
         }))
     }
 
-    const result = await productCategoriesModel.update(body, {
+    const result = await productCategoriesController.update(body, {
         id: params.id
     })
 
@@ -93,7 +102,15 @@ router.post('/update/:id', async (req, res, next) => {
 
 router.get('/delete/:id', async (req, res, next) => {
     const { params } = req
-    const result = await productCategoriesModel.delete({
+    const validation = validator(productCategoriesSchema.detail, params)
+
+    if (validation.error) {
+        return res.json(badRequest({
+            error: validation.error
+        }))
+    }
+
+    const result = await productCategoriesController.delete({
         id: params.id
     })
 

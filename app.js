@@ -37,15 +37,13 @@ app.use(logger('combined', {
     stream: accessLogStream
 }))
 
-// app.locals.strTok = require('./src/helpers/general').strTok
-
 app.use((req, res, next) => {
     res.locals.query = req.query
     res.locals.session = req.session
-    res.locals.strTok = require('./src/helpers/general').strTok
-    res.locals.baseUrl = require('./src/helpers/general').baseUrl(req, config.port)
-    res.locals.fullUrl = require('./src/helpers/general').fullUrl(req, config.port)
-    res.locals.currentUrl = require('./src/helpers/general').currentUrl(req, config.port)
+    res.locals.strTok = require('./src/helpers/common').strTok
+    res.locals.baseUrl = require('./src/helpers/common').baseUrl(req)
+    res.locals.fullUrl = require('./src/helpers/common').fullUrl(req)
+    res.locals.currentUrl = require('./src/helpers/common').currentUrl(req)
     next()
 })
 

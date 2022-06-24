@@ -1,8 +1,11 @@
 const router = require('express').Router()
-const bcrypt = require('bcrypt')
 const _ = require('lodash')
-const conn = require('./../configs/database')
+const bcrypt = require('bcrypt')
 const verify = require('./../configs/verify')
+const usersController = require('./../controllers/users')
+const usersSchema = require('./../schemas/users')
+const { badRequest } = require('./../helpers/response')
+const { validator, currentUrl, fullUrl } = require('../helpers/common')
 
 router.get('/', verify.isLogout, async (req, res, next) => {
     return res.render('authLayout', {
@@ -23,44 +26,37 @@ router.get('/logout', async (req, res, next) => {
 })
 
 router.post('/login', async (req, res, next) => {
-    const { username, password } = req.body
+    const { body } = req
+    const validation = validator(usersSchema.login, body)
 
-    let query = 'SELECT * FROM users where username = ?'
+    if (validation.error) {
+        req.flash('error', 'Invalid credentials')
+        return res.redirect('/auth')
+    }
 
-    conn.query(query, [username], (err, rows) => {
-        if (err) throw err
+    const user = await usersController.getDetail({
+        username: body.username
+    })
 
-        if (rows.length > 0) {
-            if (bcrypt.compareSync(password, rows[0].password)) {
-                req.session.isLoggedIn = true
-                req.session.user = {
-                    id: rows[0].id,
-                    username: rows[0].username,
-                    fullname: rows[0].fullname,
-                    email: rows[0].email,
-                }
+    if (user.total_data === 0) {
+        req.flash('error', 'User not found')
+        return res.redirect('/auth')
+    }
 
-                return res.redirect('/product_categories')
-            }
-
-            req.flash('error', 'Invalid credentials')
-        } else {
-            req.flash('error', 'User not found')
+    if (bcrypt.compareSync(body.password, user.data.password)) {
+        req.session.isLoggedIn = true
+        req.session.user = {
+            id: user.data.id,
+            username: user.data.username,
+            fullname: user.data.fullname,
+            email: user.data.email,
         }
 
-        res.redirect('/auth')
-    })
-})
+        return res.redirect('/products')
+    }
 
-// for existing endpoint with other request method
-router.all('*', (req, res) => {
-    res.render('error', {
-        message: 'Error',
-        error: {
-            status: 404,
-            stack: 'The page you looking is not found.'
-        }
-    })
+    req.flash('error', 'Invalid credentials')
+    return res.redirect('/auth')
 })
 
 module.exports = router

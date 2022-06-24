@@ -38,12 +38,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% if (product_categories.total_data > 0) { %>
-                            <% product_categories.data.map((row, i) => { %>
+                        <% if (product_units.total_data > 0) { %>
+                            <% product_units.data.map((row, i) => { %>
                                 <tr>
-                                    <td scope="row"><%= product_categories.paging.index[i] %></td>
+                                    <td scope="row"><%= product_units.paging.index[i] %></td>
                                     <td><%= row.name %></td>
-                                    <td><i class="fas <%= row.is_active === 1 ? 'fa-check text-info' : 'fa-times text-success' %>"></i></td>
+                                    <td><i class="fas <%= row.is_active === 1 ? 'fa-check' : 'fa-times' %>"></i></td>
                                     <td>
                                         <button type="button" class="btn btn-warning rounded-0 btn-sm btn-detail" onclick="detailData('<%= row.id %>')"><i class="far fa-edit fa-fw"></i></button>
                                         <button type="button" class="btn btn-danger rounded-0 btn-sm btn-delete" onclick="deleteData('<%= row.id %>')"><i class="far fa-trash-alt fa-fw"></i></button>

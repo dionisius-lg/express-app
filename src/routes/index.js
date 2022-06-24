@@ -14,7 +14,7 @@ fs.readdirSync(routePath).forEach((file) => {
     if (file != scriptName) {
         // get only filename, cut the file format (.js)
         const name = file.split('.')[0]
-        router.use(`/${name}`, require(`./${name}`))
+        router.use(`/${name.replace(/\_/g , "\-")}`, require(`./${name}`))
     }
 })
 

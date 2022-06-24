@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const moment = require('moment-timezone')
-const { isEmpty } = require('./general')
+const { isEmpty } = require('./common')
+const { pageInfo, pageRange } = require('./../configs/pagination')
 
 moment.tz.setDefault('Asia/Jakarta')
 
@@ -13,18 +14,19 @@ exports.success = ({ total_data, limit, data, page }) => {
 	}
 
     if (limit > 0 && total_data > 0) {
-        const pageCurrent = _.toInteger(page)
-		const pageNext = pageCurrent + 1
-		const pagePrevious = pageCurrent - 1
-		const pageFirst = 1
-		const pageLast = _.ceil(total_data/limit)
+        const current = _.toInteger(page)
+		const next = current + 1
+		const previous = current - 1
+		const first = 1
+		const last = _.ceil(total_data/limit)
 
         result.paging = {
-			current: pageCurrent,
-			next: (pageNext <= pageLast) ? pageNext : pageCurrent,
-			previous: (pagePrevious > 0) ? pagePrevious : 1,
-			first: pageFirst,
-			last: (pageLast > 0) ? pageLast : 1
+			current: current,
+			next: (next <= last) ? next : current,
+			previous: (previous > 0) ? previous : 1,
+			first: first,
+			last: (last > 0) ? last : 1,
+            index: pageInfo({ total_data, limit, current }).index
 		}
     }
 

@@ -33,7 +33,11 @@ const schema = {
         is_active: Joi.string().valid('0','1').allow(null)
     }),
     delete: Joi.object().keys({
-        id: Joi.number().min(1),
+        id: Joi.number().min(1)
+    }),
+    login: Joi.object().keys({
+        username: Joi.string().required(),
+        password: Joi.string().required()
     }),
 }
 

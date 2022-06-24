@@ -1,10 +1,10 @@
 const { getAll, getDetail, insertData, updateData, deleteData } = require('./../helpers/dbQuery')
 const { success, error, notFound, notAllowed, badRequest, unauthorized } = require('./../helpers/response')
-const table = 'students'
+const table = 'products'
 
 exports.getAll = async (conditions) => {
     const conditionTypes = {
-        'like': ['name', 'email', 'city']
+        'like': ['name']
     }
 
     const result = await getAll({ table, conditions, conditionTypes })

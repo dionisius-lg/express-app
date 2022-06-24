@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const url = require('node:url')
+const config = require('./../configs')
 
 exports.isEmpty = (val) => {
     return (
@@ -69,48 +70,52 @@ exports.strTok = (str, delim = null) => {
     return tok
 }
 
-exports.baseUrl = (req, port = null) => {
+exports.baseUrl = (req) => {
+
     let result = {
         protocol: req.protocol,
         hostname:req.hostname,
+        port: config.port || 80,
         pathname: '/'
     }
 
-    if (!this.isEmpty(port) && !_.isNaN(port)) {
-        result.port = port
-    }
+    // if (!this.isEmpty(port) && !_.isNaN(port)) {
+    //     result.port = port
+    // }
 
     return url.format(result)
 }
 
-exports.currentUrl = (req, port = null) => {
+exports.currentUrl = (req) => {
     let urlPath = req.originalUrl.split("?").shift()
     let result = {
         protocol: req.protocol,
         hostname:req.hostname,
+        port: config.port || 80,
         pathname: urlPath
     }
 
-    if (!this.isEmpty(port) && !_.isNaN(port)) {
-        result.port = port
-    }
+    // if (!this.isEmpty(port) && !_.isNaN(port)) {
+    //     result.port = port
+    // }
 
     return url.format(result)
 }
 
-exports.fullUrl = (req, port = null) => {
+exports.fullUrl = (req) => {
     let urlPath = req.originalUrl.split("?").shift()
     let urlSearch = req.originalUrl.split("?")[1]
     let result = {
         protocol: req.protocol,
         hostname:req.hostname,
+        port: config.port || 80,
         pathname: urlPath,
         search: urlSearch
     }
 
-    if (!this.isEmpty(port) && !_.isNaN(port)) {
-        result.port = port
-    }
+    // if (!this.isEmpty(port) && !_.isNaN(port)) {
+    //     result.port = port
+    // }
 
     return url.format(result)
 }

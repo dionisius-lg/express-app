@@ -55,48 +55,11 @@
             </nav>
 
             <aside class="main-sidebar sidebar-dark-primary elevation-4">
-                <a href="#" class="brand-link">
-                    <!-- <img src="/img/admin-logo.png" alt="Administator Logo" class="brand-image img-circle elevation-3" style="opacity: .8"> -->
-                    <span class="brand-text font-weight-light">Administrator</span>
+                <a href="<%- baseUrl %>" class="brand-link">
+                    <img src="<%- baseUrl %>/img/AdminLTELogo.png" alt="Administator Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                    <span class="brand-text font-weight-light">Admin POS</span>
                 </a>
-                <div class="sidebar">
-                    <nav class="mt-2">
-                         <ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
-                             <li class="nav-item">
-                                <a href="/" class="nav-link">
-									<i class="nav-icon fas fa-tachometer-alt"></i>
-                                    <p>Dashboard</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="/users" class="nav-link">
-									<i class="nav-icon fas fa-users"></i>
-                                    <p>Users</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="/students" class="nav-link">
-                                    <i class="nav-icon fas fa-users"></i>
-                                    <p>Students</p>
-                                </a>
-                            </li>
-                            <li class="nav-item menu-open">
-                                <a href="#" class="nav-link active">
-                                    <i class="nav-icon fas fa-table"></i>
-                                    <p>Products <i class="fas fa-angle-left right"></i></p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="<%= baseUrl %>product_categories" class="nav-link active">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Categories</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+                <%- include('sidebar.ejs') %>
             </aside>
 
             <div class="content-wrapper">
@@ -118,7 +81,10 @@
             </div>
 
             <footer class="main-footer">
-                <strong><i class="far fa-copyright"></i> 2022</strong>
+                <strong>Copyright <i class="far fa-copyright"></i> 2022 <a href="https://github.com/dionisius-lg/express-app">Express POS</a>.</strong>
+                <div class="float-right d-inline-block">
+                    Template by <a href="https://adminlte.io"><b>AdminLTE.io</b></a>
+                </div>
             </footer>
         </div>
 
@@ -157,5 +123,11 @@
                 </div>
             </div> -->
         <% } %>
+
+        <script>
+            $('.modal').on('shown.bs.modal', function() {
+                $(this).find('[autofocus]').focus();
+            });
+        </script>
     </body>
 </html>

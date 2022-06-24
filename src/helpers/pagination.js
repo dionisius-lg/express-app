@@ -1,41 +1,68 @@
+const _ = require('lodash')
 const classnames = require('classnames')
 const { pageDots, pageRange, pageInfo } = require('./../configs/pagination')
+const { isEmpty } = require('./common')
 
-const pagination = ({ page, total, limit, paging, sibling = 1 }) => {
-    let numDots = 0
+const pagination = ({ data, opt, sibling = 1 }) => {
+    const { total_data, paging } = data
+
+    if (isEmpty(paging) || total_data === 0) {
+        return `<div class="pb-2">Showing 0 to 0 of 0 entries</div>`
+    }
+
     const { current, first, last, previous, next } = paging
-    const range = pageRange({ total, limit, current, sibling })
-    const info = pageInfo({ total, limit, current })
+    const { url, limit } = opt
+    const range = pageRange({ total_data, limit, current, sibling })
+    const info = pageInfo({ total_data, limit, current })
+    let numDots = 0
+    let query = ""
+
+    Object.keys(opt).forEach((i) => {
+        if (['url', 'limit', 'page'].includes(i)) {
+            delete opt[i]
+        }
+
+        if (!isEmpty(opt[i])) {
+            query += `&${i}=${opt[i]}`
+        }
+    })
 
     const numPage = () => {
-        range.map(num => {
+        let result = range.map(num => {
+            
             if (num === pageDots) {
                 numDots++
-                return `<li className="page-item disabled"><span className="page-link">&#8230;</span></li>`
+                return `<li class="page-item disabled"><span class="page-link">&#8230;</span></li>`
             }
 
             let pageLink = `<li class="${classnames('page-item', { 'active': num === current})}">`
 
             if (num === current) {
-                result += `<span className="page-link">${num}</span>`
+                pageLink += `<span class="page-link">${num}</span>`
             } else {
-                result += `<a href="#" class="page-link">${num}</a>`
+                pageLink += `<a href="${url}?page=${num}${query}" class="page-link">${num}</a>`
             }
 
             pageLink += `</li>`
 
             return pageLink
         })
+
+        return result.join("\n")
     }
 
     return `
-        <div class="py-2 border-top">
+        <div class="pb-2">
             Showing ${info.lowest} to ${info.highest} of ${info.total} entries
         </div>
         <nav class="${classnames('float-right', { 'd-none': current === 0 || range.length < 2})}">
-            <ul className="pagination mb-0 pb-0">
+            <ul class="pagination mb-0 pb-0">
                 <li class="${classnames('page-item', { 'd-none': current === first})}">
-                    <a href="#" class="page-link">Prev</a>
+                    <a href="${url}?page=${previous}${query}" class="page-link">Prev</a>
+                </li>
+                ${numPage()}
+                <li class="${classnames('page-item', { 'd-none': current === last})}">
+                    <a href="${url}?page=${next}${query}" class="page-link">Next</a>
                 </li>
             </ul>
         </nav>
