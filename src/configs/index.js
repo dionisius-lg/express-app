@@ -20,6 +20,10 @@ const config = {
 		pass: process.env.DB_PASSWORD,
 		name: process.env.DB_NAME
 	},
+	session: {
+		name: process.env.SESS_NAME,
+		secret: process.env.SESS_SECRET
+	},
     dirLog: process.env.LOG_DIR
 }
 

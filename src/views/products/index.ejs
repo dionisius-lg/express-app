@@ -4,20 +4,42 @@
             <div class="card-header">
                 <h3 class="card-title">Filter Data</h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-info rounded-0 btn-add" onclick="addData()">Add New</button>
+                    <button type="button" class="btn btn-sm btn-info rounded-0 btn-add" onclick="addData()">Add New</button>
                 </div>
             </div>
             <div class="card-body">
-                <form action="<%= currentUrl %>" method="get" autocomplete="off">
+                <form id="formFilter" action="<%= currentUrl %>" method="get" autocomplete="off">
                     <div class="form-row">
                         <div class="form-group col-md-2">
-                            <label>Name</label>
-                            <input type="text" class="form-control rounded-0" name="name" value="<%= query.name %>">
+                            <label class="form-label">Name</label>
+                            <input type="text" name="name" class="form-control form-control-sm rounded-0" value="<%= query.name %>">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="form-label">SKU</label>
+                            <input type="text" name="sku" class="form-control form-control-sm rounded-0" value="<%= query.sku %>">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="form-label">Category</label>
+                            <select name="product_category_id"  class="form-control form-control-sm rounded-0">
+                                <option value="">Choose...</option>
+                                <% product_categories.data.map((row) => { %>
+                                    <option value="<%= row.id %>"><%= row.name %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="form-label">Unit</label>
+                            <select name="product_unit_id"  class="form-control form-control-sm rounded-0">
+                                <option value="">Choose...</option>
+                                <% product_units.data.map((row) => { %>
+                                    <option value="<%= row.id %>"><%= row.name %></option>
+                                <% }) %>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <button type="submit" class="btn btn-primary rounded-0">Search</button>
+                            <button type="submit" class="btn btn-sm btn-primary rounded-0">Search</button>
                         </div>
                     </div>
                 </form>
@@ -33,6 +55,13 @@
                         <tr>
                             <th class="text-nowrap" scope="col">#</th>
                             <th class="text-nowrap" scope="col">Name</th>
+                            <th class="text-nowrap" scope="col">Category</th>
+                            <th class="text-nowrap" scope="col">Unit</th>
+                            <th class="text-nowrap" scope="col">Buy Price</th>
+                            <th class="text-nowrap" scope="col">Created Date</th>
+                            <th class="text-nowrap" scope="col">Created By</th>
+                            <th class="text-nowrap" scope="col">Last Updated Date</th>
+                            <th class="text-nowrap" scope="col">Last Updated By</th>
                             <th class="text-nowrap" scope="col">Is Active</th>
                             <th class="text-nowrap" scope="col">Action</th>
                         </tr>
@@ -41,12 +70,23 @@
                         <% if (products.total_data > 0) { %>
                             <% products.data.map((row, i) => { %>
                                 <tr>
-                                    <td scope="row"><%= products.paging.index[i] %></td>
-                                    <td><%= row.name %></td>
-                                    <td><i class="fas <%= row.is_active === 1 ? 'fa-check' : 'fa-times' %>"></i></td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning rounded-0 btn-sm btn-detail" onclick="detailData('<%= row.id %>')"><i class="far fa-edit fa-fw"></i></button>
-                                        <button type="button" class="btn btn-danger rounded-0 btn-sm btn-delete" onclick="deleteData('<%= row.id %>')"><i class="far fa-trash-alt fa-fw"></i></button>
+                                    <td class="text-nowrap" scope="row"><%= paging.index[i] %></td>
+                                    <td class="text-nowrap"><%= row.name %></td>
+                                    <td class="text-nowrap"><%= row.product_category %></td>
+                                    <td class="text-nowrap"><%= row.product_unit %></td>
+                                    <td class="text-nowrap"><%= row.buy_price %></td>
+                                    <td><%= formatDateTime(row.created_date) ? formatDateTime(row.created_date) : '' %></td>
+                                    <td><%= row.created_user %></td>
+                                    <td><%= formatDateTime(row.updated_date) ? formatDateTime(row.updated_date) : '' %></td>
+                                    <td><%= row.updated_user %></td>
+                                    <td><i class="fas <%= row.is_active === 1 ? 'fa-check text-info' : 'fa-times text-success' %>"></i></td>
+                                    <td class="text-nowrap">
+                                        <button type="button" class="btn btn-sm btn-warning rounded-0 btn-detail" title="detail" onclick="detailData('<%= row.id %>')">
+                                            <i class="far fa-eye fa-fw"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger rounded-0 btn-delete" onclick="deleteData('<%= row.id %>')">
+                                            <i class="far fa-trash-alt fa-fw"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             <% }) %>
@@ -66,18 +106,53 @@
 </div>
 
 <div class="modal fade" id="modalData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-sm">
+    <div class="modal-dialog modal-dialog-scrollable">
         <form class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary">
                 <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body row">
+                <div class="form-group col-md-6">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" class="form-control form-control-sm rounded-0" autofocus>
+                    <span class="invalid-feedback"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="form-label">SKU</label>
+                    <input type="text" name="sku" class="form-control form-control-sm rounded-0">
+                    <span class="invalid-feedback"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="form-label">Catagory</label>
+                    <select name="product_category_id"  class="form-control form-control-sm rounded-0">
+                        <option value="">Choose...</option>
+                        <% product_categories.data.map((row) => { %>
+                            <option value="<%= row.id %>"><%= row.name %></option>
+                        <% }) %>
+                    </select>
+                    <span class="invalid-feedback"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="form-label">Units</label>
+                    <select name="product_unit_id"  class="form-control form-control-sm rounded-0">
+                        <option value="">Choose...</option>
+                        <% product_units.data.map((row) => { %>
+                            <option value="<%= row.id %>"><%= row.name %></option>
+                        <% }) %>
+                    </select>
+                    <span class="invalid-feedback"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="form-label">Buy Price</label>
+                    <input type="text" name="buy_price" class="form-control form-control-sm rounded-0">
+                    <span class="invalid-feedback"></span>
+                </div>
                 <div class="form-group col-md-12">
-                    <label>Name</label>
-                    <input type="text" name="name" class="form-control" autofocus>
+                    <label class="form-label">Description</label>
+                    <textarea name="description" rows="3" class="form-control form-control-sm rounded-0"></textarea>
                     <span class="invalid-feedback"></span>
                 </div>
                 <div class="form-group col-md-12">
@@ -118,12 +193,19 @@
                     modalData.modal('hide')
                     window.location.reload()
                 } else {
-                    if ('error' in res) {
-                        if (res.error !== null && typeof res.error === 'object') {
-                            $.each(res.error, function(key, val) {
+                    if (res.redirect) {
+                        window.location = res.redirect
+                        return
+                    }
+
+                    if ('formError' in res) {
+                        if (res.formError !== null && typeof res.formError === 'object') {
+                            $.each(res.formError, (key, val) => {
+                                let element = formData.find(`[name="${key}"`)
+
                                 if (val !== '') {
-                                    formData.find(`[name="${key}"]`).addClass('is-invalid')
-                                    formData.find(`[name="${key}"]`).parents('.form-group').find('.invalid-feedback').html(val.substr(0,1).toUpperCase() + val.substr(1))
+                                    element.addClass('is-invalid')
+                                    element.parents('.form-group').find('.invalid-feedback').html(val.substr(0,1).toUpperCase() + val.substr(1))
                                 }
                             })
 
@@ -169,14 +251,27 @@
                     if (res.success) {
                         if (res.total_data > 0) {
                             $.each(res.data, (key, val) => {
-                                if (['is_active'].indexOf(key) >= 0) {
-                                    formData.find(`[name="${key}"`).prop('checked', val == 1 ? true : false)
-                                } else {
-                                    formData.find(`[name="${key}"`).val(val)
+                                let element = formData.find(`[name="${key}"`)
+                                let elementType = element.prop('type')
+
+                                if (elementType !== undefined) {
+                                    if (['is_active'].indexOf(key) >= 0) {
+                                        element.prop('checked', val == 1 ? true : false)
+                                    } else {
+                                        element.val(val)
+
+                                        if (elementType === 'select-one' && element.find(`option[value="${val}"]`).length === 0) {
+                                            element.val(null)
+                                        }
+                                    }
                                 }
                             })
 
                             modalData.modal({'backdrop': 'static', 'keyboard': false, 'show': true})
+                        }
+                    } else {
+                        if (res.redirect) {
+                            window.location = res.redirect
                         }
                     }
                 },
@@ -191,8 +286,8 @@
         if (id && $.isNumeric(id)) {
             const swb = Swal.mixin({
                 customClass: {
-                    confirmButton: 'btn btn-primary rounded-0 mr-2',
-                    cancelButton: 'btn btn-default rounded-0'
+                    confirmButton: 'btn btn-sm btn-primary rounded-0 mr-2',
+                    cancelButton: 'btn btn-sm btn-default rounded-0'
                 },
                 buttonsStyling: false
             })
@@ -213,6 +308,10 @@
                             if (res.success) {
                                 window.location.reload()
                             } else {
+                                if (res.redirect) {
+                                    window.location = res.redirect
+                                }
+
                                 toastr.error(response.message)
                             }
                         },
@@ -224,4 +323,23 @@
             })
         }
     }
+
+    $(document).ready(() => {
+        let productCategoryId = '<%= query.product_category_id %>'
+        let productUnitId = '<%= query.product_unit_id %>'
+
+        if (productCategoryId && $.isNumeric(productCategoryId)) {
+            let element = $('#formFilter [name="product_category_id"]')
+            if (element.find(`option[value="${productCategoryId}"]`).length) {
+                element.val(productCategoryId).trigger('change')
+            }
+        }
+
+        if (productUnitId && $.isNumeric(productUnitId)) {
+            let element = $('#formFilter [name="product_unit_id"]')
+            if (element.find(`option[value="${productUnitId}"]`).length) {
+                element.val(productUnitId).trigger('change')
+            }
+        }
+    })
 </script>

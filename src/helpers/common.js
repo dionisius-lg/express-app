@@ -1,5 +1,7 @@
 const _ = require('lodash')
+const fs = require('fs')
 const url = require('node:url')
+const moment = require('moment-timezone')
 const config = require('./../configs')
 
 exports.isEmpty = (val) => {
@@ -11,6 +13,22 @@ exports.isEmpty = (val) => {
         (typeof val === 'string' && val.trim().length === 0) ||
         (typeof val === 'number' && val < 1)
     )
+}
+
+exports.isJson = (val) => {
+    value = typeof val !== "string" ? JSON.stringify(val) : val
+
+    try {
+        value = JSON.parse(value)
+    } catch (e) {
+        return false
+    }
+
+    if (typeof value === "object" && value !== null) {
+        return true
+    }
+
+    return false
 }
 
 exports.validator = (schema, property, file = false) => { 
@@ -52,6 +70,10 @@ exports.upperCaseFirst = (str) => {
     return words.join(' ')
 }
 
+exports.capitalizeCase = (str) => {
+    return str && str[0].toUpperCase() + str.slice(1)
+}
+
 exports.sentenceCase = (str) => {
     str = ( str === undefined || str === null ) ? '' : str
 
@@ -60,10 +82,21 @@ exports.sentenceCase = (str) => {
     })
 }
 
-exports.strTok = (str, delim = null) => {
-    if (this.isEmpty(delim)) delim = " "
+exports.strTok = (str = false, delim = null) => {
+    if (this.isEmpty(str)) {
+        return ""
+    }
+
+    if (this.isEmpty(delim)) {
+        delim = " "
+    }
+
     let i = str.indexOf(delim)
-    if (i === -1) return str
+
+    if (i === -1) {
+        return str
+    }
+
     let tok = str.substring(0, i)
     str = str.substring(i + 1)
 
@@ -71,17 +104,12 @@ exports.strTok = (str, delim = null) => {
 }
 
 exports.baseUrl = (req) => {
-
     let result = {
         protocol: req.protocol,
         hostname:req.hostname,
         port: config.port || 80,
         pathname: '/'
     }
-
-    // if (!this.isEmpty(port) && !_.isNaN(port)) {
-    //     result.port = port
-    // }
 
     return url.format(result)
 }
@@ -94,10 +122,6 @@ exports.currentUrl = (req) => {
         port: config.port || 80,
         pathname: urlPath
     }
-
-    // if (!this.isEmpty(port) && !_.isNaN(port)) {
-    //     result.port = port
-    // }
 
     return url.format(result)
 }
@@ -113,9 +137,69 @@ exports.fullUrl = (req) => {
         search: urlSearch
     }
 
-    // if (!this.isEmpty(port) && !_.isNaN(port)) {
-    //     result.port = port
-    // }
-
     return url.format(result)
+}
+
+exports.formatDate = (val) => {
+    const date = moment(val)
+
+    if (date.isValid()) {
+        return date.format('YYYY-MM-DD')
+    }
+
+    return false
+}
+
+exports.formatDateTime = (val) => {
+    const date = moment(val)
+
+    if (date.isValid()) {
+        return date.format('YYYY-MM-DD HH:mm:ss')
+    }
+
+    return false
+}
+
+exports.diffDate = (valOld, valNew) => {
+    const dateNew = moment(valOld)
+    const dateOld = moment(valNew)
+
+    if (dateNew.isValid() && dateOld.isValid()) {
+        return dateNew.diff(dateOld)
+    }
+
+    return false
+}
+
+exports.sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+
+exports.isEjs = (path) => {
+    const pieces   = path.split("/")
+    const lastPath = pieces[pieces.length - 1]
+
+    if (this.isEmpty(lastPath)) {
+        path += 'index'
+    }
+
+    try {
+        try1 = fs.lstatSync(`src/views/${path}`)
+
+        if (try1.isDirectory()) {
+            return `${path}/index.ejs`
+        }
+    } catch(err) {
+        try {
+            try2 = fs.lstatSync(`src/views/${path}.ejs`)
+
+            if (try2.isFile()) {
+                return `${path}.ejs`
+            }
+
+            return false
+        } catch (err2) {
+            return false
+        }
+    }
 }

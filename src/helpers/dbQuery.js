@@ -116,7 +116,6 @@ exports.getAll = ({ table = '', conditions = {}, conditionTypes = { 'like': [], 
         let column  = ''
 
         const masterColumns   = columns
-        const customAttribute = { ... conditions }
         const sortData        = ['ASC', 'DESC']
 
         let order = (!_.isEmpty(conditions.order)) ? conditions.order : columns[0]

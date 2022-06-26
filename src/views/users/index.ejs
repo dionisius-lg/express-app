@@ -4,28 +4,28 @@
             <div class="card-header">
                 <h3 class="card-title">Filter Data</h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-info rounded-0 btn-sm btn-add" onclick="addData()">Add New</button>
+                    <button type="button" class="btn btn-sm btn-info rounded-0 btn-add" onclick="addData()">Add New</button>
                 </div>
             </div>
             <div class="card-body">
                 <form action="<%= currentUrl %>" method="get" autocomplete="off">
                     <div class="form-row">
                         <div class="form-group col-md-2">
-                            <label>Username</label>
-                            <input type="text" class="form-control rounded-0" name="username" value="<%= query.username %>">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control form-control-sm rounded-0" name="username" value="<%= query.username %>">
                         </div>
                         <div class="form-group col-md-2">
-                            <label>Email</label>
-                            <input type="text" class="form-control rounded-0" name="email" value="<%= query.email %>">
+                            <label class="form-label">Email</label>
+                            <input type="text" class="form-control form-control-sm rounded-0" name="email" value="<%= query.email %>">
                         </div>
                         <div class="form-group col-md-2">
-                            <label>Fullname</label>
-                            <input type="text" class="form-control rounded-0" name="fullname" value="<%= query.fullname %>">
+                            <label class="form-label">Fullname</label>
+                            <input type="text" class="form-control form-control-sm rounded-0" name="fullname" value="<%= query.fullname %>">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <button type="submit" class="btn btn-primary rounded-0">Search</button>
+                            <button type="submit" class="btn btn-sm btn-primary rounded-0">Search</button>
                         </div>
                     </div>
                 </form>
@@ -43,6 +43,11 @@
                             <th class="text-nowrap" scope="col">Username</th>
                             <th class="text-nowrap" scope="col">Email</th>
                             <th class="text-nowrap" scope="col">Fullname</th>
+                            <th class="text-nowrap" scope="col">Created Date</th>
+                            <th class="text-nowrap" scope="col">Created By</th>
+                            <th class="text-nowrap" scope="col">Last Updated Date</th>
+                            <th class="text-nowrap" scope="col">Last Updated By</th>
+                            <th class="text-nowrap" scope="col">Is Active</th>
                             <th class="text-nowrap" scope="col">Action</th>
                         </tr>
                     </thead>
@@ -50,13 +55,22 @@
                         <% if (users.total_data > 0) { %>
                             <% users.data.map((row, i) => { %>
                                 <tr>
-                                    <td scope="row"><%= (i+1) %></td>
-                                    <td><%= row.username %></td>
-                                    <td><%= row.email %></td>
-                                    <td><%= row.fullname %></td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning rounded-0 btn-sm btn-detail" onclick="detailData('<%= row.id %>')">Detail</button>
-                                        <button type="button" class="btn btn-danger rounded-0 btn-sm btn-delete" onclick="deleteData('<%= row.id %>')">Delete</button>
+                                    <td class="text-nowrap" scope="row"><%= paging.index[i] %></td>
+                                    <td class="text-nowrap"><%= row.username %></td>
+                                    <td class="text-nowrap"><%= row.email %></td>
+                                    <td class="text-nowrap"><%= row.fullname %></td>
+                                    <td><%= formatDateTime(row.created_date) ? formatDateTime(row.created_date) : '' %></td>
+                                    <td><%= row.created_user %></td>
+                                    <td><%= formatDateTime(row.updated_date) ? formatDateTime(row.updated_date) : '' %></td>
+                                    <td><%= row.updated_user %></td>
+                                    <td><i class="fas <%= row.is_active === 1 ? 'fa-check text-info' : 'fa-times text-success' %>"></i></td>
+                                    <td class="text-nowrap">
+                                        <button type="button" class="btn btn-sm btn-warning rounded-0 btn-detail" title="detail" onclick="detailData('<%= row.id %>')">
+                                            <i class="far fa-eye fa-fw"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger rounded-0 btn-delete" onclick="deleteData('<%= row.id %>')">
+                                            <i class="far fa-trash-alt fa-fw"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             <% }) %>
@@ -76,32 +90,32 @@
 <div class="modal fade" id="modalData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
         <form class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary">
                 <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body row">
                 <div class="form-group col-md-12">
-                    <label>Username</label>
-                    <input type="text" name="username" class="form-control" autofocus>
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control form-control-sm rounded-0" autofocus>
                     <span class="invalid-feedback"></span>
                 </div>
                 <div class="form-group col-md-12">
-                    <label>Email</label>
-                    <input type="text" name="email" class="form-control">
+                    <label class="form-label">Email</label>
+                    <input type="text" name="email" class="form-control form-control-sm rounded-0">
                     <span class="invalid-feedback"></span>
                 </div>
                 <div class="form-group col-md-12">
-                    <label>Fullname</label>
-                    <input type="text" name="fullname" class="form-control">
+                    <label class="form-label">Fullname</label>
+                    <input type="text" name="fullname" class="form-control form-control-sm rounded-0">
                     <span class="invalid-feedback"></span>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary rounded-0 btn-submit">Save</button>
-                <button type="button" class="btn btn-default rounded-0 btn-cancel" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-sm btn-primary rounded-0 btn-submit">Save</button>
+                <button type="button" class="btn btn-sm btn-default rounded-0 btn-cancel" data-dismiss="modal">Close</button>
             </div>
       </form>
     </div>
@@ -132,7 +146,7 @@
                 } else {
                     if ('error' in res) {
                         if (res.error !== null && typeof res.error === 'object') {
-                            $.each(res.error, function(key, val) {
+                            $.each(res.error, (key, val) => {
                                 if (val !== '') {
                                     formData.find(`[name="${key}"]`).addClass('is-invalid')
                                     formData.find(`[name="${key}"]`).parents('.form-group').find('.invalid-feedback').html(val.substr(0,1).toUpperCase() + val.substr(1))

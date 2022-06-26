@@ -1,124 +1,16 @@
 const router = require('express').Router()
-const _ = require('lodash')
-const verify = require('./../configs/verify')
-const productsController = require('./../controllers/products')
-const productsSchema = require('./../schemas/products')
-const { badRequest } = require('./../helpers/response')
-const { validator, currentUrl, fullUrl } = require('../helpers/common')
-const pagination = require('./../helpers/pagination')
+const middleware = require('./../configs/middleware')
+const controller = require('./../controllers/products')
+const schema = require('./../schemas/products')
 
-router.get('/', verify.isLogin, async (req, res, next) => {
-    const { query, params } = req
-    const limit = 10
+router.get('/', middleware.verifyLogin, controller.index)
 
-    let result = {
-        products: await productsController.getAll({ limit: limit, ...query })
-    }
+router.get('/detail/:id', middleware.verifyLogin, middleware.validation(schema.detail, 'params'), controller.detail)
 
-    result.pagination = pagination({
-        data: result.products || {},
-        opt: { url: currentUrl(req), limit: limit, ...query }
-    })
+router.post('/create', middleware.verifyLogin, middleware.validation(schema.create, 'body'), controller.create)
 
-    return res.render('adminLayout', {
-        pageTitle: 'Product',
-        template: 'products/index.ejs',
-        ...result
-    })
-})
+router.post('/update/:id', middleware.verifyLogin, middleware.validation(schema.update, 'body'), controller.update)
 
-router.post('/create', async (req, res, next) => {
-    const { body } = req
-    const validation = validator(productsSchema.create, body)
-
-    if (!('is_active' in body)) {
-        body.is_active = "1"
-    }
-
-    if (validation.error) {
-        return res.json(badRequest({
-            error: validation.error
-        }))
-    }
-
-    const result = await productsController.insert(body)
-
-    if (result.success) {
-        req.flash('success', 'Data has been saved')
-    }
-
-    return res.json(result)
-})
-
-router.get('/detail/:id', verify.isLogin, async (req, res, next) => {
-    const { params } = req
-    const validation = validator(productsSchema.detail, params)
-
-    if (validation.error) {
-        return res.json(badRequest({
-            error: validation.error
-        }))
-    }
-
-    const result = await productsController.getDetail({
-        id: params.id
-    })
-
-    return res.json(result)
-})
-
-router.post('/update/:id', async (req, res, next) => {
-    const { body, params } = req
-    let validation = validator(productsSchema.detail, params)
-
-    if (validation.error) {
-        return res.json(badRequest({
-            error: validation.error
-        }))
-    }
-
-    validation = validator(productsSchema.update, body)
-
-    if (!('is_active' in body)) {
-        body.is_active = '0'
-    }
-
-    if (validation.error) {
-        return res.json(badRequest({
-            error: validation.error
-        }))
-    }
-
-    const result = await productsController.update(body, {
-        id: params.id
-    })
-
-    if (result.success) {
-        req.flash('success', 'Data has been updated')
-    }
-
-    return res.json(result)
-})
-
-router.get('/delete/:id', async (req, res, next) => {
-    const { params } = req
-    const validation = validator(productsSchema.detail, params)
-
-    if (validation.error) {
-        return res.json(badRequest({
-            error: validation.error
-        }))
-    }
-
-    const result = await productsController.delete({
-        id: params.id
-    })
-
-    if (result.success) {
-        req.flash('success', 'Data has been deleted')
-    }
-
-    return res.json(result)
-})
+router.get('/delete/:id', middleware.verifyLogin, middleware.validation(schema.delete, 'params'), controller.delete)
 
 module.exports = router

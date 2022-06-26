@@ -4,10 +4,10 @@ const fs = require('fs')
 const path = require('path')
 const scriptName = path.basename(__filename)
 const routePath = './src/routes'
+const middleware = require('./../configs/middleware')
+const controller = require('../controllers/home')
 
-router.get('/', (req, res) => {
-    res.send({app: 'Express App'})
-})
+router.get('/', middleware.verifyLogin, controller.dashboard)
 
 fs.readdirSync(routePath).forEach((file) => {
     // not including this file

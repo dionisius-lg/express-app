@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const moment = require('moment-timezone')
 const { isEmpty } = require('./common')
-const { pageInfo, pageRange } = require('./../configs/pagination')
+const { pageInfo } = require('./../configs/pagination')
 
 moment.tz.setDefault('Asia/Jakarta')
 
@@ -37,97 +37,7 @@ exports.error = ({ message, error }) => {
     let result = {
 		request_time: moment().unix(),
 		success: false,
-        message: "Internal server error"
-	}
-
-    if (message && !isEmpty(message) && _.isString(message)) {
-        result.message += `. ${message}`
-    }
-
-    if (error && !isEmpty(error) && _.isObject(error)) {
-        result.error = error
-    }
-
-    return result
-}
-
-exports.notFound = ({ message, error }) => {
-    let result = {
-		request_time: moment().unix(),
-		success: false,
-        message: "Not Found"
-	}
-
-    if (message && !isEmpty(message) && _.isString(message)) {
-        result.message += `. ${message}`
-    }
-
-    if (error && !isEmpty(error) && _.isObject(error)) {
-        result.error = error
-    }
-
-    return result
-}
-
-exports.notAllowed = ({ message, error }) => {
-    let result = {
-		request_time: moment().unix(),
-		success: false,
-        message: "Not allowed"
-	}
-
-    if (message && !isEmpty(message) && _.isString(message)) {
-        result.message += `. ${message}`
-    }
-
-    if (error && !isEmpty(error) && _.isObject(error)) {
-        result.error = error
-    }
-
-    return result
-}
-
-exports.badRequest = ({ message, error }) => {
-    let result = {
-		request_time: moment().unix(),
-		success: false,
-        message: "Bad request"
-	}
-
-    if (message && !isEmpty(message) && _.isString(message)) {
-        result.message += `. ${message}`
-    }
-
-    if (error && !isEmpty(error) && _.isObject(error)) {
-        result.error = error
-    }
-
-    return result
-}
-
-exports.unauthorized = ({ message, error }) => {
-    let result = {
-		request_time: moment().unix(),
-		success: false,
-        message: "Unauthorized"
-	}
-
-    if (message && !isEmpty(message) && _.isString(message)) {
-        result.message += `. ${message}`
-    }
-
-    if (error && !isEmpty(error) && _.isObject(error)) {
-        result.error = error
-    }
-
-    return result
-}
-
-exports.forbidden = ({ message, error }) => {
-    let result = {
-		request_time: moment().unix(),
-		success: false,
-        message: "Forbidden"
+        message: "Error"
 	}
 
     if (message && !isEmpty(message) && _.isString(message)) {
