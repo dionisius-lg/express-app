@@ -1,0 +1,420 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Filter Data</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-sm btn-info rounded-0 btn-add" onclick="addData()">Add New</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form action="<%= currentUrl %>" method="get" autocomplete="off">
+                    <div class="form-row">
+                        <div class="form-group col-md-2">
+                            <label class="form-label">Product</label>
+                            <input type="text" name="product" class="form-control form-control-sm rounded-0" value="<%= query.product %>">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="form-label">SKU</label>
+                            <input type="text" name="sku" class="form-control form-control-sm rounded-0" value="<%= query.sku %>">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="form-label">Supplier</label>
+                            <input type="text" name="supplier" class="form-control form-control-sm rounded-0" value="<%= query.supplier %>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-sm btn-primary rounded-0">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-nowrap" scope="col">No.</th>
+                            <th class="text-nowrap" scope="col">SKU</th>
+                            <th class="text-nowrap" scope="col">Product</th>
+                            <th class="text-nowrap" scope="col">Supplier</th>
+                            <th class="text-nowrap" scope="col">Qty</th>
+                            <th class="text-nowrap" scope="col">Stock In Date</th>
+                            <th class="text-nowrap" scope="col">Is Active</th>
+                            <th class="text-nowrap" scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (stock_in.total_data > 0) { %>
+                            <% stock_in.data.map((row, i) => { %>
+                                <tr>
+                                    <td class="text-nowrap" scope="row"><%= paging.index[i] %></td>
+                                    <td class="text-nowrap"><%= row.sku %></td>
+                                    <td class="text-nowrap"><%= row.product %></td>
+                                    <td class="text-nowrap"><%= row.supplier %></td>
+                                    <td class="text-nowrap"><%= row.quantity %></td>
+                                    <td><%= formatDateTime(row.stocked_date) ? formatDateTime(row.stocked_date) : '' %></td>
+                                    <td><i class="fas <%= row.is_active === 1 ? 'fa-check text-info' : 'fa-times text-success' %>"></i></td>
+                                    <td class="text-nowrap">
+                                        <button type="button" class="btn btn-sm btn-warning rounded-0 btn-detail" title="detail" onclick="detailData('<%= row.id %>')">
+                                            <i class="far fa-eye fa-fw"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger rounded-0 btn-delete" onclick="deleteData('<%= row.id %>')">
+                                            <i class="far fa-trash-alt fa-fw"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                            
+                        <% } else { %>
+                            <tr>
+                                <td colspan="5">No data</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+                <hr>
+                <%- pagination %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalData" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="data collapse show" autocomplete="off">
+                <div class="modal-body row">
+                    <input type="hidden" name="product_id" class="form-control form-control-sm rounded-0">
+                    <div class="form-group col-md-6">
+                        <label class="form-label">Product</label>
+                        <div class="input-group input-group-sm">
+                            <input type="text" name="product" class="form-control form-control-sm rounded-0 sku-product" autofocus>
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-sm btn-info rounded-0" onclick="showModalTable()">
+                                    <span class="fas fa-search fa-fw"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <span class="form-error small text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="form-label">SKU</label>
+                        <input type="text" name="sku" class="form-control form-control-sm rounded-0" readonly>
+                        <span class="invalid-feedback"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="form-label">Supplier</label>
+                        <select name="supplier_id" class="form-control form-control-sm rounded-0">
+                            <option value="">Choose...</option>
+                            <% suppliers.data.map((row) => { %>
+                                <option value="<%= row.id %>"><%= row.name %></option>
+                            <% }) %>
+                        </select>
+                        <span class="invalid-feedback"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label">Stock In Date</label>
+                        <input type="text" name="stocked_date" class="form-control form-control-sm rounded-0">
+                        <span class="invalid-feedback"></span>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="form-label">Qty</label>
+                        <input type="text" name="quantity" class="form-control form-control-sm rounded-0">
+                        <span class="invalid-feedback"></span>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label class="form-label">Note</label>
+                        <textarea name="note" rows="3" class="form-control form-control-sm rounded-0"></textarea>
+                        <span class="invalid-feedback"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-sm btn-primary rounded-0 btn-submit">Save</button>
+                    <button type="button" class="btn btn-sm btn-default rounded-0 btn-cancel" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+            <div class="modal-body table-responsive collapse">
+                <form class="products border-info" autocomplete="off">
+                    <div class="row">
+                        <div class="form-group col-md-6 offset-md-6">
+                            <div class="input-group input-group-sm">
+                                <input type="text" name="sku_product" class="form-control form-control-sm rounded-0" placeholder="Search name or sku...">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-sm btn-info rounded-0 btn-submit">
+                                        <span class="fas fa-search fa-fw"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <table class="table table-sm table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-nowrap" scope="col">Name</th>
+                            <th class="text-nowrap" scope="col">SKU</th>
+                            <th class="text-nowrap" scope="col">Qty</th>
+                            <th class="text-nowrap" scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="4" class="text-nowrap text-center">No data found</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="nav-table"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const modalData = $('#modalData')
+    const formData = $('#modalData form.data')
+    const formProducts = $('#modalData form.products')
+    const tableProducts = $('#modalData .table-responsive')
+    const navProducts = $('#modalData .nav-table')
+
+    modalData.on('hidden.bs.modal', () => {
+        showModalForm()
+    })
+
+    formData.on('submit', (e) => {
+        e.preventDefault()
+
+        $.ajax({
+            url: formData.attr('action'),
+            type: 'post',
+            data: formData.serialize(),
+            dataType: 'json',
+            beforeSend: () => {
+                formData.find('.invalid-feedback').empty()
+                formData.find('.btn-submit, .btn-cancel').attr({'disabled': true})
+                formData.find('.btn-submit').prepend('<span class="spinner-border spinner-border-sm mr-2">&nbsp;</span>')
+                modalData.find('.close').attr({'disabled': true})
+            },
+            success: (res) => {
+                if (res.success) {
+                    modalData.modal('hide')
+                    window.location.reload()
+                } else {
+                    if (res.redirect) {
+                        window.location = res.redirect
+                        return
+                    }
+
+                    if ('formError' in res) {
+                        if (res.formError !== null && typeof res.formError === 'object') {
+                            $.each(res.formError, (key, val) => {
+                                if (val !== '') {
+                                    formData.find(`[name="${key}"]`).addClass('is-invalid')
+                                    formData.find(`[name="${key}"]`).parents('.form-group').find('.invalid-feedback').html(val.substr(0,1).toUpperCase() + val.substr(1))
+                                }
+                            })
+
+                            formData.find('.btn-submit, .btn-cancel').attr({'disabled': false})
+                            formData.find('.btn-submit span').remove()
+                            modalData.find('.close').attr({'disabled': false})
+                            return
+                        }
+                    }
+
+                    modalData.modal('hide')
+                    toastr.error(res.message)
+                }
+            }
+        })
+    })
+
+    function addData() {
+        formData[0].reset()
+        // formData.find('select').val(null).trigger('change')
+        formData.attr({'action': '<%= currentUrl %>/create'})
+        formData.find('input, select, textarea').removeClass('is-invalid')
+        formData.find('.invalid-feedback').empty()
+        formData.find('[name="is_active"]').prop('checked', true).attr('disabled', true)
+
+        modalData.find('.modal-header .modal-title').html('Add New Data')
+        modalData.modal({'backdrop': 'static', 'keyboard': false, 'show': true})
+    }
+
+    function detailData(id) {
+        if (id && $.isNumeric(id)) {
+            $.ajax({
+                url: `<%= currentUrl %>/detail/${id}`,
+                type: 'get',
+                dataType: 'json',
+                beforeSend: () => {
+                    formData[0].reset()
+                    formData.attr({'action': `<%= currentUrl %>/update/${id}`})
+                    formData.find('.modal-title').html('Detail Data')
+                    formData.find('[name="is_active"]').attr('disabled', false)
+                },
+                success: (res) => {
+                    if (res.success) {
+                        if (res.total_data > 0) {
+                            $.each(res.data, (key, val) => {
+                                if (['is_active'].indexOf(key) >= 0) {
+                                    formData.find(`[name="${key}"`).prop('checked', val == 1 ? true : false)
+                                } else {
+                                    formData.find(`[name="${key}"`).val(val)
+                                }
+                            })
+
+                            modalData.modal({'backdrop': 'static', 'keyboard': false, 'show': true})
+                        }
+                    } else {
+                        if (res.redirect) {
+                            window.location = res.redirect
+                        }
+                    }
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.log(jqXHR.status + '|' + textStatus + '|' + errorThrown);
+                }
+            })
+        }
+    }
+
+    function deleteData(id) {
+        if (id && $.isNumeric(id)) {
+            const swb = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-sm btn-primary rounded-0 mr-2',
+                    cancelButton: 'btn btn-sm btn-default rounded-0'
+                },
+                buttonsStyling: false
+            })
+
+            swb.fire({
+                title: 'Delete this data?',
+                text: 'This action cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Confirm'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `<%= currentUrl %>/delete/${id}`,
+                        type: 'get',
+                        dataType: 'json',
+                        success: (res) => {
+                            if (res.success) {
+                                window.location.reload()
+                            } else {
+                                if (res.redirect) {
+                                    window.location = res.redirect
+                                }
+
+                                toastr.error(response.message)
+                            }
+                        },
+                        error: (jqXHR, textStatus, errorThrown) => {
+                            console.log(jqXHR.status + '|' + textStatus + '|' + errorThrown);
+                        }
+                    })
+                }
+            })
+        }
+    }
+
+    function showModalTable() {
+        formData.collapse('hide')
+        tableProducts.collapse('show')
+        productList()
+    }
+
+    function showModalForm() {
+        formData.collapse('show')
+        tableProducts.collapse('hide')
+    }
+
+    function productList(param) {
+        const tableBody = tableProducts.find('tbody')
+        let productUrl = `<%= currentUrl %>/products`
+
+        if (param && param !== null) {
+            productUrl += `?${param}`
+        }
+
+        $.ajax({
+            url: productUrl,
+            type: 'get',
+            dataType: 'json',
+            beforeSend: () => {
+                tableBody.html(`<tr>
+                    <td colspan="4" class="text-nowrap text-center">Please wait...</td>
+                </tr>`)
+            },
+            success: (res) => {
+                if (res !== null && typeof res === 'object') {
+                    if (res.success) {
+                        tableBody.empty()
+
+                        res.data.map((row, i) => {
+                            let dataRow = JSON.stringify(row).replace(/"/g, "\'")
+
+                            tableBody.append(`<tr>
+                                <td>${row.name}</td>
+                                <td>${row.sku}</td>
+                                <td></td>
+                                <td><button type="button" data-row="${dataRow}" class="btn btn-xs btn-primary rounded-0 btn-select">Select</button></td>
+                            </tr>`)
+                        })
+
+                        if (res.total_data > res.data.length) {
+                            navProducts.append(`<li class="list-unstyled"><button type="button" class="btn btn-sm btn-secondary rounded-0 btn-prev" data-page="${res.paging.previous}">&larr;</button></li>`)
+                            $('#Paging').append('');
+                        }
+
+                        return
+                    }
+                }
+
+                tableBody.html(`<tr>
+                    <td colspan="4" class="text-nowrap text-center">No data found</td>
+                </tr>`)
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                console.log(jqXHR.status + '|' + textStatus + '|' + errorThrown)
+                tableBody.html(`<tr>
+                    <td colspan="4" class="text-nowrap text-center">No data found</td>
+                </tr>`)
+            }
+        })
+    }
+
+    formProducts.on('submit', (e) => {
+        e.preventDefault()
+        productList(formProducts.serialize()) 
+    })
+
+    tableProducts.on('click', '.btn-select', (e) => {
+        let dataRow = e.currentTarget.getAttribute('data-row').replace(/'/g, '\"')
+            dataRow = JSON.parse(dataRow)
+
+        $.each(dataRow, (key, val) => {
+            if (['name', 'id'].indexOf(key) === -1) {
+                formData.find(`[name="${key}"]`).val(val)
+            }
+        })
+
+        formData.find(`[name="product_id"]`).val(dataRow.id)
+        formData.find(`[name="product"]`).val(dataRow.name)
+        showModalForm()
+        // console.log($(this).remove())
+    })
+</script>

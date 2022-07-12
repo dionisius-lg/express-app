@@ -1,32 +1,20 @@
 const { getAll, getDetail, insertData, updateData, deleteData } = require('../helpers/dbQuery')
 const { success, error } = require('../helpers/response')
-const table = 'products'
+const table = 'suppliers'
 
 exports.getAll = async (conditions) => {
-    let customConditions = []
-
-    if (conditions.sku_product !== undefined) {
-        customConditions.push(`(${table}.sku LIKE '%${conditions.sku_product}%' OR ${table}.name LIKE '%${conditions.sku_product}%')`)
-    }
-
-    if (conditions.like_sku != undefined) {
-        customConditions.push(`${table}.sku Like '%${conditions.like_sku}%'`)
-    }
-
     const conditionTypes = {
         'like': ['name']
     }
 
+    let customConditions = []
+
     const customColumns = [
-        `product_categories.name AS product_category`,
-        `product_units.name AS product_unit`,
         `created_user.fullname AS created_user`,
         `updated_user.fullname AS updated_user`,
     ]
 
     const join = [
-        `LEFT JOIN product_categories ON product_categories.id = ${table}.product_category_id`,
-        `LEFT JOIN product_units ON product_units.id = ${table}.product_unit_id`,
         `LEFT JOIN users AS created_user ON created_user.id = ${table}.created_user_id`,
         `LEFT JOIN users AS updated_user ON updated_user.id = ${table}.updated_user_id`,
     ]
@@ -44,20 +32,20 @@ exports.getDetail = async (conditions) => {
     let customConditions = []
 
     const customColumns = [
-        `product_categories.name AS product_category`,
-        `product_units.name AS product_unit`,
         `created_user.fullname AS created_user`,
         `updated_user.fullname AS updated_user`,
     ]
 
     const join = [
-        `LEFT JOIN product_categories ON product_categories.id = ${table}.product_category_id`,
-        `LEFT JOIN product_units ON product_units.id = ${table}.product_unit_id`,
         `LEFT JOIN users AS created_user ON created_user.id = ${table}.created_user_id`,
         `LEFT JOIN users AS updated_user ON updated_user.id = ${table}.updated_user_id`,
     ]
 
     const result = await getDetail({ table, conditions, customConditions, customColumns, join })
+
+    if (result.total_data > 0) {
+        return success(result)
+    }
 
     if (result.total_data > 0) {
         return success(result)
@@ -95,5 +83,5 @@ exports.delete = async (conditions) => {
         return success(result)
     }
 
-    return error({message: "Bad Request"})
+    return error({message: "Bad request"})
 }

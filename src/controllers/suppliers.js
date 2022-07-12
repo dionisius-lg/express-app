@@ -1,12 +1,11 @@
 const _ = require('lodash')
-const bcrypt = require('bcrypt')
 const moment = require('moment-timezone')
 const path = require('path')
 const currentPath = path.basename(__filename).split(".")[0]
 const config = require('./../configs')
 const { isEmpty, currentUrl } = require('../helpers/common')
 const pagination = require('./../helpers/pagination')
-const usersModel = require('../models/users')
+const suppliersModel = require('../models/suppliers')
 
 moment.tz.setDefault(config.timezone)
 
@@ -21,7 +20,7 @@ exports.index = async (req, res, next) => {
     })
 
     const getData = {
-        [currentPath]: await usersModel.getAll({ limit: limit, ...query })
+        [currentPath]: await suppliersModel.getAll({ limit: limit, ...query })
     }
 
     let result = {
@@ -51,7 +50,7 @@ exports.index = async (req, res, next) => {
 
     return res.render('adminLayout', {
         template: `${currentPath}`,
-        pageTitle: 'Users',
+        pageTitle: 'Suppliers',
         ...result
     })
 }
@@ -59,7 +58,7 @@ exports.index = async (req, res, next) => {
 exports.detail = async (req, res, next) => {
     const { params } = req
 
-    const result = await usersModel.getDetail({
+    const result = await suppliersModel.getDetail({
         id: params.id
     })
 
@@ -76,7 +75,7 @@ exports.create = async (req, res, next) => {
     body.created_user_id = req.session.user.id
     body.created_date = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
 
-    const result = await usersModel.insert(body)
+    const result = await suppliersModel.insert(body)
 
     if (result.success) {
         req.flash('success', 'Data has been saved')
@@ -95,7 +94,7 @@ exports.update = async (req, res, next) => {
     body.updated_user_id = req.session.user.id
     body.updated_date = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
 
-    const result = await usersModel.update(body, {
+    const result = await suppliersModel.update(body, {
         id: params.id
     })
 
@@ -109,7 +108,7 @@ exports.update = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
     const { params } = req
 
-    const result = await usersModel.delete({
+    const result = await suppliersModel.delete({
         id: params.id
     })
 
@@ -118,50 +117,4 @@ exports.delete = async (req, res, next) => {
     }
 
     return res.json(result)
-}
-
-exports.auth = (req, res, next) => {
-    return res.render('authLayout', {
-        template: `${currentPath}/login`,
-        pageTitle: 'Login',
-    })
-}
-
-exports.authLogin = async (req, res, next) => {
-    const { body } = req
-
-    const user = await usersModel.getDetail({
-        username: body.username
-    })
-
-    if (!user.success || user.total_data === 0) {
-        req.flash('error', 'User not found')
-        return res.redirect('/auth')
-    }
-
-    if (bcrypt.compareSync(body.password, user.data.password)) {
-        req.session.isLoggedIn = true
-        req.session.user = {
-            id: user.data.id,
-            username: user.data.username,
-            fullname: user.data.fullname,
-            email: user.data.email,
-        }
-
-        return res.redirect('/stock-in')
-    }
-
-    req.flash('error', 'Invalid credentials')
-    return res.redirect('/auth')
-}
-
-exports.authLogout = (req, res, next) => {
-    req.session.destroy((err) => {
-        if (err) {
-            return console.log(err, 'asd')
-        }
-
-        res.clearCookie(config.session.secret)
-        res.redirect('/auth')
-    })
 }

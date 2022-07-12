@@ -11,16 +11,12 @@
                 <form action="<%= currentUrl %>" method="get" autocomplete="off">
                     <div class="form-row">
                         <div class="form-group col-md-2">
-                            <label class="form-label">Username</label>
-                            <input type="text" class="form-control form-control-sm rounded-0" name="username" value="<%= query.username %>">
+                            <label class="form-label">Name</label>
+                            <input type="text" name="name" class="form-control form-control-sm rounded-0" value="<%= query.name %>">
                         </div>
                         <div class="form-group col-md-2">
-                            <label class="form-label">Email</label>
-                            <input type="text" class="form-control form-control-sm rounded-0" name="email" value="<%= query.email %>">
-                        </div>
-                        <div class="form-group col-md-2">
-                            <label class="form-label">Fullname</label>
-                            <input type="text" class="form-control form-control-sm rounded-0" name="fullname" value="<%= query.fullname %>">
+                            <label class="form-label">Phone</label>
+                            <input type="text" name="phone" class="form-control form-control-sm rounded-0" value="<%= query.phone %>">
                         </div>
                     </div>
                     <div class="row">
@@ -39,10 +35,9 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th class="text-nowrap" scope="col">#</th>
-                            <th class="text-nowrap" scope="col">Username</th>
-                            <th class="text-nowrap" scope="col">Email</th>
-                            <th class="text-nowrap" scope="col">Fullname</th>
+                            <th class="text-nowrap" scope="col">No.</th>
+                            <th class="text-nowrap" scope="col">Name</th>
+                            <th class="text-nowrap" scope="col">Phone</th>
                             <th class="text-nowrap" scope="col">Created Date</th>
                             <th class="text-nowrap" scope="col">Created By</th>
                             <th class="text-nowrap" scope="col">Last Updated Date</th>
@@ -52,13 +47,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% if (users.total_data > 0) { %>
-                            <% users.data.map((row, i) => { %>
+                        <% if (suppliers.total_data > 0) { %>
+                            <% suppliers.data.map((row, i) => { %>
                                 <tr>
                                     <td class="text-nowrap" scope="row"><%= paging.index[i] %></td>
-                                    <td class="text-nowrap"><%= row.username %></td>
-                                    <td class="text-nowrap"><%= row.email %></td>
-                                    <td class="text-nowrap"><%= row.fullname %></td>
+                                    <td class="text-nowrap"><%= row.name %></td>
+                                    <td class="text-nowrap"><%= row.phone %></td>
                                     <td><%= formatDateTime(row.created_date) ? formatDateTime(row.created_date) : '' %></td>
                                     <td><%= row.created_user %></td>
                                     <td><%= formatDateTime(row.updated_date) ? formatDateTime(row.updated_date) : '' %></td>
@@ -82,6 +76,8 @@
                         <% } %>
                     </tbody>
                 </table>
+                <hr>
+                <%- pagination %>
             </div>
         </div>
     </div>
@@ -98,19 +94,25 @@
             </div>
             <div class="modal-body row">
                 <div class="form-group col-md-12">
-                    <label class="form-label">Username</label>
-                    <input type="text" name="username" class="form-control form-control-sm rounded-0" autofocus>
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" class="form-control form-control-sm rounded-0" autofocus>
                     <span class="invalid-feedback"></span>
                 </div>
                 <div class="form-group col-md-12">
-                    <label class="form-label">Email</label>
-                    <input type="text" name="email" class="form-control form-control-sm rounded-0">
+                    <label class="form-label">Address</label>
+                    <textarea name="address" rows="3" class="form-control form-control-sm rounded-0"></textarea>
+                    <span class="invalid-feedback"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="form-label">Phone</label>
+                    <input type="text" name="phone" class="form-control form-control-sm rounded-0" autofocus>
                     <span class="invalid-feedback"></span>
                 </div>
                 <div class="form-group col-md-12">
-                    <label class="form-label">Fullname</label>
-                    <input type="text" name="fullname" class="form-control form-control-sm rounded-0">
-                    <span class="invalid-feedback"></span>
+                    <div class="icheck-primary">
+                        <input type="checkbox" name="is_active" id="isActive" value="1">
+                        <label for="isActive">Active</label>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -144,9 +146,14 @@
                     modalData.modal('hide')
                     window.location.reload()
                 } else {
-                    if ('error' in res) {
-                        if (res.error !== null && typeof res.error === 'object') {
-                            $.each(res.error, (key, val) => {
+                    if (res.redirect) {
+                        window.location = res.redirect
+                        return
+                    }
+
+                    if ('formError' in res) {
+                        if (res.formError !== null && typeof res.formError === 'object') {
+                            $.each(res.formError, (key, val) => {
                                 if (val !== '') {
                                     formData.find(`[name="${key}"]`).addClass('is-invalid')
                                     formData.find(`[name="${key}"]`).parents('.form-group').find('.invalid-feedback').html(val.substr(0,1).toUpperCase() + val.substr(1))
@@ -173,6 +180,7 @@
         formData.attr({'action': '<%= currentUrl %>/create'})
         formData.find('input, select, textarea').removeClass('is-invalid')
         formData.find('.invalid-feedback').empty()
+        formData.find('[name="is_active"').prop('checked', true).attr('disabled', true)
 
         modalData.find('.modal-header .modal-title').html('Add New Data')
         modalData.modal({'backdrop': 'static', 'keyboard': false, 'show': true})
@@ -188,15 +196,24 @@
                     formData[0].reset()
                     formData.attr({'action': `<%= currentUrl %>/update/${id}`})
                     formData.find('.modal-title').html('Detail Data')
+                    formData.find('[name="is_active"').attr('disabled', false)
                 },
                 success: (res) => {
                     if (res.success) {
                         if (res.total_data > 0) {
                             $.each(res.data, (key, val) => {
-                                formData.find(`[name="${key}"`).val(val)
+                                if (['is_active'].indexOf(key) >= 0) {
+                                    formData.find(`[name="${key}"`).prop('checked', val == 1 ? true : false)
+                                } else {
+                                    formData.find(`[name="${key}"`).val(val)
+                                }
                             })
 
                             modalData.modal({'backdrop': 'static', 'keyboard': false, 'show': true})
+                        }
+                    } else {
+                        if (res.redirect) {
+                            window.location = res.redirect
                         }
                     }
                 },
@@ -211,8 +228,8 @@
         if (id && $.isNumeric(id)) {
             const swb = Swal.mixin({
                 customClass: {
-                    confirmButton: 'btn btn-primary rounded-0 mr-2',
-                    cancelButton: 'btn btn-default rounded-0'
+                    confirmButton: 'btn btn-sm btn-primary rounded-0 mr-2',
+                    cancelButton: 'btn btn-sm btn-default rounded-0'
                 },
                 buttonsStyling: false
             })
@@ -233,6 +250,10 @@
                             if (res.success) {
                                 window.location.reload()
                             } else {
+                                if (res.redirect) {
+                                    window.location = res.redirect
+                                }
+
                                 toastr.error(response.message)
                             }
                         },

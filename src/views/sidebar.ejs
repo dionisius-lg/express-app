@@ -2,15 +2,15 @@
     <nav class="mt-2">
          <ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
              <li class="nav-item">
-                <a href="/" class="nav-link">
+                <a href="<%= baseUrl %>" class="nav-link">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
                     <p>Dashboard</p>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/users" class="nav-link">
+                <a href="<%= baseUrl %>suppliers" class="nav-link">
                     <i class="nav-icon fas fa-users"></i>
-                    <p>Users</p>
+                    <p>Suppliers</p>
                 </a>
             </li>
             <li class="nav-item menu-open">
@@ -38,6 +38,38 @@
                         </a>
                     </li>
                 </ul>
+            </li>
+            <li class="nav-item menu-open">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-table"></i>
+                    <p>Transaction <i class="fas fa-angle-left right"></i></p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="<%= baseUrl %>sales" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Sales</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<%= baseUrl %>stock-in" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Stock In / Purchase</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<%= baseUrl %>stock-out" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Stock Out</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="<%= baseUrl %>users" class="nav-link">
+                    <i class="nav-icon fas fa-users"></i>
+                    <p>Users</p>
+                </a>
             </li>
         </ul>
     </nav>

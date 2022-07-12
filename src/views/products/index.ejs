@@ -53,8 +53,9 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th class="text-nowrap" scope="col">#</th>
+                            <th class="text-nowrap" scope="col">No</th>
                             <th class="text-nowrap" scope="col">Name</th>
+                            <th class="text-nowrap" scope="col">SKU</th>
                             <th class="text-nowrap" scope="col">Category</th>
                             <th class="text-nowrap" scope="col">Unit</th>
                             <th class="text-nowrap" scope="col">Buy Price</th>
@@ -72,6 +73,7 @@
                                 <tr>
                                     <td class="text-nowrap" scope="row"><%= paging.index[i] %></td>
                                     <td class="text-nowrap"><%= row.name %></td>
+                                    <td class="text-nowrap"><%= row.sku %></td>
                                     <td class="text-nowrap"><%= row.product_category %></td>
                                     <td class="text-nowrap"><%= row.product_unit %></td>
                                     <td class="text-nowrap"><%= row.buy_price %></td>
@@ -105,7 +107,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalData" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
         <form class="modal-content">
             <div class="modal-header bg-primary">
@@ -127,7 +129,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label class="form-label">Catagory</label>
-                    <select name="product_category_id"  class="form-control form-control-sm rounded-0">
+                    <select name="product_category_id" class="form-control form-control-sm rounded-0">
                         <option value="">Choose...</option>
                         <% product_categories.data.map((row) => { %>
                             <option value="<%= row.id %>"><%= row.name %></option>
@@ -137,7 +139,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label class="form-label">Units</label>
-                    <select name="product_unit_id"  class="form-control form-control-sm rounded-0">
+                    <select name="product_unit_id" class="form-control form-control-sm rounded-0">
                         <option value="">Choose...</option>
                         <% product_units.data.map((row) => { %>
                             <option value="<%= row.id %>"><%= row.name %></option>
