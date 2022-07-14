@@ -5,11 +5,9 @@ const currentPath = path.basename(__filename).split(".")[0]
 const config = require('../configs')
 const { isEmpty, currentUrl } = require('../helpers/common')
 const pagination = require('../helpers/pagination')
-// const paginationArrow = require('../helpers/paginationArrow')
 const stocksModel = require('../models/stocks')
 const suppliersModel = require('../models/suppliers')
 const productsModel = require('../models/products')
-const paginationArrow = require('../helpers/paginationArrow')
 
 moment.tz.setDefault(config.timezone)
 
@@ -22,6 +20,8 @@ exports.index = async (req, res, next) => {
             delete query[key]
         }
     })
+
+    query.stock_type_id = 1
 
     const getData = {
         [currentPath]: await stocksModel.getAll({ limit: limit, ...query }),
@@ -54,7 +54,7 @@ exports.index = async (req, res, next) => {
     })
 
     return res.render('adminLayout', {
-        template: `${currentPath}`,
+        view: `${currentPath}`,
         pageTitle: 'Stock In',
         ...result
     })
@@ -73,10 +73,17 @@ exports.detail = async (req, res, next) => {
 exports.create = async (req, res, next) => {
     const { body } = req
 
+    Object.keys(body).forEach(key => {
+        if (['product', 'sku', 'stock'].includes(body)) {
+            delete query[key]
+        }
+    })
+
     if (!('is_active' in body)) {
         body.is_active = '1'
     }
 
+    body.stock_type_id = 1
     body.created_user_id = req.session.user.id
     body.created_date = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
 
@@ -92,10 +99,17 @@ exports.create = async (req, res, next) => {
 exports.update = async (req, res, next) => {
     const { body, params } = req
 
+    Object.keys(body).forEach(key => {
+        if (['product', 'sku', 'stock'].includes(body)) {
+            delete query[key]
+        }
+    })
+
     if (!('is_active' in body)) {
         body.is_active = '0'
     }
 
+    body.stock_type_id = 1
     body.updated_user_id = req.session.user.id
     body.updated_date = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
 
@@ -114,7 +128,8 @@ exports.delete = async (req, res, next) => {
     const { params } = req
 
     const result = await stocksModel.delete({
-        id: params.id
+        id: params.id,
+        stock_type_id: 1
     })
 
     if (result.success) {
@@ -126,8 +141,7 @@ exports.delete = async (req, res, next) => {
 
 exports.products = async (req, res, next) => {
     const { query } = req
-    const limit = 1
-    let result = { success: false }
+    const limit = 10
 
     Object.keys(query).forEach(key => {
         if (isEmpty(query[key])) {
@@ -135,21 +149,7 @@ exports.products = async (req, res, next) => {
         }
     })
 
-    const getData = await productsModel.getAll({ limit: limit, ...query })
-
-    if (getData.success) {
-        result = {
-            ...result,
-            success: getData.success,
-            total_data: getData.total_data,
-            data: getData.data
-        }
-
-        if (getData.hasOwnProperty('paging')) {
-            const { paging } = getData
-            result.pagination = paginationArrow({ paging, query})
-        }
-    }
+    const result = await productsModel.getAll({ limit: limit, ...query })
 
     return res.json(result)
 }

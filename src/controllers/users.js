@@ -50,7 +50,7 @@ exports.index = async (req, res, next) => {
     })
 
     return res.render('adminLayout', {
-        template: `${currentPath}`,
+        view: `${currentPath}`,
         pageTitle: 'Users',
         ...result
     })
@@ -122,7 +122,7 @@ exports.delete = async (req, res, next) => {
 
 exports.auth = (req, res, next) => {
     return res.render('authLayout', {
-        template: `${currentPath}/login`,
+        view: `${currentPath}/login`,
         pageTitle: 'Login',
     })
 }

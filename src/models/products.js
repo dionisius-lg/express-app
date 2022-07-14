@@ -7,10 +7,12 @@ exports.getAll = async (conditions) => {
 
     if (conditions.sku_product !== undefined) {
         customConditions.push(`(${table}.sku LIKE '%${conditions.sku_product}%' OR ${table}.name LIKE '%${conditions.sku_product}%')`)
+        delete conditions.sku_product
     }
 
     if (conditions.like_sku != undefined) {
         customConditions.push(`${table}.sku Like '%${conditions.like_sku}%'`)
+        delete conditions.like_sku
     }
 
     const conditionTypes = {
@@ -20,6 +22,13 @@ exports.getAll = async (conditions) => {
     const customColumns = [
         `product_categories.name AS product_category`,
         `product_units.name AS product_unit`,
+        `(
+            (SELECT IFNULL(SUM(stk.qty), 0) FROM stocks AS stk
+                WHERE stk.is_active = 1 AND stk.stock_type_id = 1 AND stk.product_id = ${table}.id)
+            -
+            (SELECT IFNULL(SUM(stk.qty), 0) FROM stocks AS stk
+                WHERE stk.is_active = 1 AND stk.stock_type_id = 2 AND stk.product_id = ${table}.id)
+        ) AS stock`,
         `created_user.fullname AS created_user`,
         `updated_user.fullname AS updated_user`,
     ]
@@ -31,7 +40,15 @@ exports.getAll = async (conditions) => {
         `LEFT JOIN users AS updated_user ON updated_user.id = ${table}.updated_user_id`,
     ]
 
-    const result = await getAll({ table, conditions, conditionTypes, customConditions, customColumns, join })
+    const groupBy = [
+        `${table}.id`
+    ]
+
+    if (conditions.groupBy != undefined) {
+        customConditions.push(`products.name Like '%${conditions.product}%'`)
+    }
+
+    const result = await getAll({ table, conditions, conditionTypes, customConditions, customColumns, join, groupBy })
 
     if (result.total_data > 0) {
         return success(result)
@@ -46,6 +63,13 @@ exports.getDetail = async (conditions) => {
     const customColumns = [
         `product_categories.name AS product_category`,
         `product_units.name AS product_unit`,
+        `(
+            (SELECT IFNULL(SUM(stk.qty), 0) FROM stocks AS stk
+                WHERE stk.is_active = 1 AND stk.stock_type_id = 1 AND stk.product_id = ${table}.id)
+            -
+            (SELECT IFNULL(SUM(stk.qty), 0) FROM stocks AS stk
+                WHERE stk.is_active = 1 AND stk.stock_type_id = 2 AND stk.product_id = ${table}.id)
+        ) AS stock`,
         `created_user.fullname AS created_user`,
         `updated_user.fullname AS updated_user`,
     ]
@@ -57,7 +81,11 @@ exports.getDetail = async (conditions) => {
         `LEFT JOIN users AS updated_user ON updated_user.id = ${table}.updated_user_id`,
     ]
 
-    const result = await getDetail({ table, conditions, customConditions, customColumns, join })
+    const groupBy = [
+        `${table}.id`
+    ]
+
+    const result = await getDetail({ table, conditions, customConditions, customColumns, join, groupBy })
 
     if (result.total_data > 0) {
         return success(result)

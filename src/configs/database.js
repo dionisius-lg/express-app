@@ -2,11 +2,12 @@ const mysql = require('mysql')
 const config = require('./index')
 
 const conn  = mysql.createConnection({
-    host     : config.db.host,
-    port     : config.db.port,
-    user     : config.db.user,
-    password : config.db.pass,
-    database : config.db.name
+    host        : config.db.host,
+    port        : config.db.port,
+    user        : config.db.user,
+    password    : config.db.pass,
+    database    : config.db.name,
+    dateStrings : true
 })
 
 conn.connect(function (err) {

@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="/vendor/adminlte/css/adminlte.min.css">
         <link rel="stylesheet" href="/vendor/toastr/css/toastr.min.css" type="text/css">
         <link rel="stylesheet" href="/vendor/sweetalert2/css/sweetalert2.min.css" type="text/css">
+        <link rel="stylesheet" href="/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css" type="text/css">
 
         <style>
             .swal2-popup {
@@ -46,14 +47,16 @@
         <![endif]-->
 
         <script src="/vendor/jquery/jquery.min.js"></script>
+        <script src="/vendor/moment/moment.min.js"></script>
         <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="/vendor/jqvmap/js/jquery.vmap.min.js"></script>
-        <script src="/vendor/adminlte/js/adminlte.js"></script>
+        <script src="/vendor/adminlte/js/adminlte.min.js"></script>
         <script src="/vendor/toastr/js/toastr.min.js"></script>
         <script src="/vendor/sweetalert2/js/sweetalert2.min.js"></script>
+        <script src="/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
     </head>
 
-    <body class="sidebar-mini control-sidebar-slide-open layout-fixed layout-navbar-fixed layout-footer-fixed">
+    <body class="sidebar-mini control-sidebar-slide-open layout-fixed">
         <div class="wrapper">
             <nav class="main-header navbar navbar-expand navbar-white navbar-light">
                 <ul class="navbar-nav">
@@ -99,7 +102,7 @@
 
                 <div class="content">
                     <div class="container-fluid">
-                        <%- isEjs(template) ? include(isEjs(template)) : '' %>
+                        <%- isEjs(view) ? include(isEjs(view)) : '' %>
                     </div>
                 </div>
             </div>
@@ -148,10 +151,6 @@
             </div> -->
         <% } %>
 
-        <script>
-            $('.modal').on('shown.bs.modal', function() {
-                $(this).find('[autofocus]').focus();
-            });
-        </script>
+        <script src="/js/common.js"></script>
     </body>
 </html>

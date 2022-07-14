@@ -42,21 +42,19 @@
                             <th class="text-nowrap" scope="col">No.</th>
                             <th class="text-nowrap" scope="col">SKU</th>
                             <th class="text-nowrap" scope="col">Product</th>
-                            <th class="text-nowrap" scope="col">Supplier</th>
                             <th class="text-nowrap" scope="col">Qty</th>
-                            <th class="text-nowrap" scope="col">Stock In Date</th>
+                            <th class="text-nowrap" scope="col">Stock Out Date</th>
                             <th class="text-nowrap" scope="col">Is Active</th>
                             <th class="text-nowrap" scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <% if (stock_in.total_data > 0) { %>
-                            <% stock_in.data.map((row, i) => { %>
+                        <% if (stock_out.total_data > 0) { %>
+                            <% stock_out.data.map((row, i) => { %>
                                 <tr>
                                     <td class="text-nowrap" scope="row"><%= paging.index[i] %></td>
                                     <td class="text-nowrap"><%= row.sku %></td>
                                     <td class="text-nowrap"><%= row.product %></td>
-                                    <td class="text-nowrap"><%= row.supplier %></td>
                                     <td class="text-nowrap"><%= row.qty %></td>
                                     <td><%= row.stocked_date %></td>
                                     <td><i class="fas <%= row.is_active === 1 ? 'fa-check text-info' : 'fa-times text-success' %>"></i></td>
@@ -125,18 +123,8 @@
                         <span class="invalid-feedback"></span>
                     </div>
                     <div class="form-group col-md-6">
-                        <label class="form-label">Stock In Date</label>
+                        <label class="form-label">Stock Out Date</label>
                         <input type="text" name="stocked_date" class="form-control form-control-sm rounded-0 date">
-                        <span class="invalid-feedback"></span>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="form-label">Supplier</label>
-                        <select name="supplier_id" class="form-control form-control-sm rounded-0">
-                            <option value="">Choose...</option>
-                            <% suppliers.data.map((row) => { %>
-                                <option value="<%= row.id %>"><%= row.name %></option>
-                            <% }) %>
-                        </select>
                         <span class="invalid-feedback"></span>
                     </div>
                     <div class="form-group col-md-12">

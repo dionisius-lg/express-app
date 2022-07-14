@@ -49,7 +49,7 @@ exports.index = async (req, res, next) => {
     })
 
     return res.render('adminLayout', {
-        template: `${currentPath}`,
+        view: `${currentPath}`,
         pageTitle: 'Product Categories',
         ...result
     })

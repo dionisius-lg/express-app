@@ -2,12 +2,12 @@ const _ = require('lodash')
 const moment = require('moment-timezone')
 const path = require('path')
 const currentPath = path.basename(__filename).split(".")[0]
-const config = require('./../configs')
+const config = require('../configs')
 const { isEmpty, currentUrl } = require('../helpers/common')
-const pagination = require('./../helpers/pagination')
+const pagination = require('../helpers/pagination')
+const stocksModel = require('../models/stocks')
+const suppliersModel = require('../models/suppliers')
 const productsModel = require('../models/products')
-const productCategoriesModel = require('../models/product_categories')
-const productUnitsModel = require('../models/product_units')
 
 moment.tz.setDefault(config.timezone)
 
@@ -21,10 +21,11 @@ exports.index = async (req, res, next) => {
         }
     })
 
+    query.stock_type_id = 2
+
     const getData = {
-        [currentPath]: await productsModel.getAll({ limit: limit, ...query }),
-        product_categories: await productCategoriesModel.getAll({ limit: 100, is_active: 1, sort: "name" }),
-        product_units: await productUnitsModel.getAll({ limit: 100, is_active: 1, sort: "name" })
+        [currentPath]: await stocksModel.getAll({ limit: limit, ...query }),
+        suppliers: await suppliersModel.getAll({ limit: 100, is_active: 1, sort: "name" })
     }
 
     let result = {
@@ -54,7 +55,7 @@ exports.index = async (req, res, next) => {
 
     return res.render('adminLayout', {
         view: `${currentPath}`,
-        pageTitle: 'Products',
+        pageTitle: 'Stock Out',
         ...result
     })
 }
@@ -62,7 +63,7 @@ exports.index = async (req, res, next) => {
 exports.detail = async (req, res, next) => {
     const { params } = req
 
-    const result = await productsModel.getDetail({
+    const result = await stocksModel.getDetail({
         id: params.id
     })
 
@@ -72,14 +73,21 @@ exports.detail = async (req, res, next) => {
 exports.create = async (req, res, next) => {
     const { body } = req
 
+    Object.keys(body).forEach(key => {
+        if (['product', 'sku', 'stock'].includes(body)) {
+            delete query[key]
+        }
+    })
+
     if (!('is_active' in body)) {
         body.is_active = '1'
     }
 
+    body.stock_type_id = 2
     body.created_user_id = req.session.user.id
     body.created_date = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
 
-    const result = await productsModel.insert(body)
+    const result = await stocksModel.insert(body)
 
     if (result.success) {
         req.flash('success', 'Data has been saved')
@@ -91,14 +99,21 @@ exports.create = async (req, res, next) => {
 exports.update = async (req, res, next) => {
     const { body, params } = req
 
+    Object.keys(body).forEach(key => {
+        if (['product', 'sku', 'stock'].includes(body)) {
+            delete query[key]
+        }
+    })
+
     if (!('is_active' in body)) {
         body.is_active = '0'
     }
 
+    body.stock_type_id = 2
     body.updated_user_id = req.session.user.id
     body.updated_date = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
 
-    const result = await productsModel.update(body, {
+    const result = await stocksModel.update(body, {
         id: params.id
     })
 
@@ -112,13 +127,29 @@ exports.update = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
     const { params } = req
 
-    const result = await productsModel.delete({
-        id: params.id
+    const result = await stocksModel.delete({
+        id: params.id,
+        stock_type_id: 2
     })
 
     if (result.success) {
         req.flash('success', 'Data has been deleted')
     }
+
+    return res.json(result)
+}
+
+exports.products = async (req, res, next) => {
+    const { query } = req
+    const limit = 10
+
+    Object.keys(query).forEach(key => {
+        if (isEmpty(query[key])) {
+            delete query[key]
+        }
+    })
+
+    const result = await productsModel.getAll({ limit: limit, ...query })
 
     return res.json(result)
 }

@@ -32,12 +32,8 @@
                     <thead>
                         <tr>
                             <th class="text-nowrap" scope="col">No.</th>
-                            <th class="text-nowrap" scope="col">Name</th>
-                            <th class="text-nowrap" scope="col">Created Date</th>
-                            <th class="text-nowrap" scope="col">Created By</th>
-                            <th class="text-nowrap" scope="col">Last Updated Date</th>
-                            <th class="text-nowrap" scope="col">Last Updated By</th>
-                            <th class="text-nowrap" scope="col">Is Active</th>
+                            <th class="text-nowrap" scope="col" width="60%">Name</th>
+                            <th class="text-nowrap" scope="col"">Is Active</th>
                             <th class="text-nowrap" scope="col">Action</th>
                         </tr>
                     </thead>
@@ -47,10 +43,6 @@
                                 <tr>
                                     <td class="text-nowrap" scope="row"><%= paging.index[i] %></td>
                                     <td class="text-nowrap"><%= row.name %></td>
-                                    <td><%= formatDateTime(row.created_date) ? formatDateTime(row.created_date) : '' %></td>
-                                    <td><%= row.created_user %></td>
-                                    <td><%= formatDateTime(row.updated_date) ? formatDateTime(row.updated_date) : '' %></td>
-                                    <td><%= row.updated_user %></td>
                                     <td><i class="fas <%= row.is_active === 1 ? 'fa-check text-info' : 'fa-times text-success' %>"></i></td>
                                     <td class="text-nowrap">
                                         <button type="button" class="btn btn-sm btn-warning rounded-0 btn-detail" title="detail" onclick="detailData('<%= row.id %>')">
@@ -65,7 +57,7 @@
                             
                         <% } else { %>
                             <tr>
-                                <td colspan="5">No data</td>
+                                <td colspan="4">No data</td>
                             </tr>
                         <% } %>
                     </tbody>
@@ -78,7 +70,7 @@
 </div>
 
 <div class="modal fade" id="modalData" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-sm">
+    <div class="modal-dialog">
         <form class="modal-content">
             <div class="modal-header bg-primary">
                 <h5 class="modal-title">Modal title</h5>
@@ -90,6 +82,26 @@
                 <div class="form-group col-md-12">
                     <label class="form-label">Name</label>
                     <input type="text" name="name" class="form-control form-control-sm rounded-0" autofocus>
+                    <span class="invalid-feedback"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="form-label">Created Date</label>
+                    <input type="text" name="created_date" class="form-control form-control-sm rounded-0" readonly>
+                    <span class="invalid-feedback"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="form-label">Created By</label>
+                    <input type="text" name="created_user" class="form-control form-control-sm rounded-0" readonly>
+                    <span class="invalid-feedback"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="form-label">Last Updated Date</label>
+                    <input type="text" name="updated_date" class="form-control form-control-sm rounded-0" readonly>
+                    <span class="invalid-feedback"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="form-label">Last Update By</label>
+                    <input type="text" name="updated_user" class="form-control form-control-sm rounded-0" readonly>
                     <span class="invalid-feedback"></span>
                 </div>
                 <div class="form-group col-md-12">
@@ -120,7 +132,7 @@
             data: formData.serialize(),
             dataType: 'json',
             beforeSend: () => {
-                formData.find('.invalid-feedback').empty()
+                formData.find('.invalid-feedback, .form-error').empty()
                 formData.find('.btn-submit, .btn-cancel').attr({'disabled': true})
                 formData.find('.btn-submit').prepend('<span class="spinner-border spinner-border-sm mr-2">&nbsp;</span>')
                 modalData.find('.close').attr({'disabled': true})
@@ -160,14 +172,12 @@
 
     function addData() {
         formData[0].reset()
-        // formData.find('select').val(null).trigger('change')
         formData.attr({'action': '<%= currentUrl %>/create'})
         formData.find('input, select, textarea').removeClass('is-invalid')
-        formData.find('.invalid-feedback').empty()
-        formData.find('[name="is_active"').prop('checked', true).attr('disabled', true)
-
+        formData.find('.invalid-feedback, .form-error').empty()
+        formData.find('[name="is_active"]').prop('checked', true).attr('disabled', true)
         modalData.find('.modal-header .modal-title').html('Add New Data')
-        modalData.modal({'backdrop': 'static', 'keyboard': false, 'show': true})
+        modalData.modal('show')
     }
 
     function detailData(id) {
@@ -179,21 +189,23 @@
                 beforeSend: () => {
                     formData[0].reset()
                     formData.attr({'action': `<%= currentUrl %>/update/${id}`})
-                    formData.find('.modal-title').html('Detail Data')
-                    formData.find('[name="is_active"').attr('disabled', false)
+                    formData.find('input, select, textarea').removeClass('is-invalid')
+                    formData.find('.invalid-feedback, .form-error').empty()
+                    formData.find('[name="is_active"]').attr('disabled', false)
+                    modalData.find('.modal-header .modal-title').html('Detail Data')
                 },
                 success: (res) => {
                     if (res.success) {
                         if (res.total_data > 0) {
                             $.each(res.data, (key, val) => {
-                                if (['is_active'].indexOf(key) >= 0) {
+                                if (['is_active'].includes(key)) {
                                     formData.find(`[name="${key}"`).prop('checked', val == 1 ? true : false)
                                 } else {
                                     formData.find(`[name="${key}"`).val(val)
                                 }
                             })
 
-                            modalData.modal({'backdrop': 'static', 'keyboard': false, 'show': true})
+                            modalData.modal('show')
                         }
                     } else {
                         if (res.redirect) {

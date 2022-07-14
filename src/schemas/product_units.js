@@ -14,9 +14,13 @@ const schema = {
 
             return errs
         }),
-        created_user_id: Joi.number().min(1).allow(null).allow(''),
-        created_date: Joi.date().format('YYYY-MM-DD HH:mm:ss').utc().allow(null).allow(''),
-        is_active: Joi.string().valid('0','1').allow(null).allow('')
+        is_active: Joi.string().valid('0','1').allow(null).allow(''),
+        created_date: Joi.any().strip(),
+        // created_user_id: Joi.any().strip(),
+        created_user: Joi.any().strip(),
+        updated_date: Joi.any().strip(),
+        // updated_user_id: Joi.number().min(1).allow(null).allow(''),
+        updated_user: Joi.any().strip()
     }),
     update: Joi.object().keys({
         name: Joi.string().max(100).regex(/^[a-zA-Z0-9 ]*$/).error(errs => {
@@ -28,9 +32,13 @@ const schema = {
 
             return errs
         }),
-        updated_user_id: Joi.number().min(1).allow(null).allow(''),
-        updated_date: Joi.date().format('YYYY-MM-DD HH:mm:ss').utc().allow(null).allow(''),
-        is_active: Joi.string().valid('0','1').allow(null).allow('')
+        is_active: Joi.string().valid('0','1').allow(null).allow(''),
+        created_date: Joi.any().strip(),
+        // created_user_id: Joi.any().strip(),
+        created_user: Joi.any().strip(),
+        updated_date: Joi.any().strip(),
+        // updated_user_id: Joi.number().min(1).allow(null).allow(''),
+        updated_user: Joi.any().strip()
     }),
     delete: Joi.object().keys({
         id: Joi.number().min(1),

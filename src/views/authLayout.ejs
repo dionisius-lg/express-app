@@ -21,10 +21,10 @@
 
         <script src="/vendor/jquery/jquery.min.js"></script>
         <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="/vendor/adminlte/js/adminlte.js"></script>
+        <script src="/vendor/adminlte/js/adminlte.min.js"></script>
     </head>
 
     <body class="hold-transition login-page">
-        <%- include(template) %>
+        <%- isEjs(view) ? include(isEjs(view)) : '' %>
     </body>
 </html>

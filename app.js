@@ -40,11 +40,11 @@ app.use(logger('combined', {
 app.use((req, res, next) => {
     res.locals.query = req.query
     res.locals.session = req.session
-    res.locals.fn = require('./src/helpers/common')
+    // res.locals.fn = require('./src/helpers/common')
     res.locals.isEjs = require('./src/helpers/common').isEjs
     res.locals.strTok = require('./src/helpers/common').strTok
-    res.locals.formatDate = require('./src/helpers/common').formatDate
-    res.locals.formatDateTime = require('./src/helpers/common').formatDateTime
+    // res.locals.formatDate = require('./src/helpers/common').formatDate
+    // res.locals.formatDateTime = require('./src/helpers/common').formatDateTime
     res.locals.baseUrl = require('./src/helpers/common').baseUrl(req)
     res.locals.fullUrl = require('./src/helpers/common').fullUrl(req)
     res.locals.currentUrl = require('./src/helpers/common').currentUrl(req)

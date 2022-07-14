@@ -19,7 +19,11 @@ exports.getAll = async (conditions) => {
         `LEFT JOIN users AS updated_user ON updated_user.id = ${table}.updated_user_id`,
     ]
 
-    const result = await getAll({ table, conditions, conditionTypes, customConditions, customColumns, join })
+    const groupBy = [
+        `${table}.id`
+    ]
+
+    const result = await getAll({ table, conditions, conditionTypes, customConditions, customColumns, join, groupBy })
 
     if (result.total_data > 0) {
         return success(result)
@@ -41,11 +45,11 @@ exports.getDetail = async (conditions) => {
         `LEFT JOIN users AS updated_user ON updated_user.id = ${table}.updated_user_id`,
     ]
 
-    const result = await getDetail({ table, conditions, customConditions, customColumns, join })
+    const groupBy = [
+        `${table}.id`
+    ]
 
-    if (result.total_data > 0) {
-        return success(result)
-    }
+    const result = await getDetail({ table, conditions, customConditions, customColumns, join, groupBy })
 
     if (result.total_data > 0) {
         return success(result)

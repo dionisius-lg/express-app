@@ -7,7 +7,7 @@ const { isEmpty } = require('../helpers/common')
 
 exports.dashboard = (req, res, next) => {
     return res.render('adminLayout', {
-        template: `${currentPath}/dashboard`,
+        view: `${currentPath}/dashboard`,
         pageTitle: 'Dashboard',
     })
 }
