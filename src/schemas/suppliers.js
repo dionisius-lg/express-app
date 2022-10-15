@@ -14,7 +14,6 @@ const schema = {
 
             return errs
         }),
-        address: Joi.string().max(255).allow(null).allow(''),
         phone: Joi.string().max(30).regex(/^[0-9]*$/).error(errs => {
             errs.forEach(err => {
                 if (err.code === 'string.pattern.base') {
@@ -25,6 +24,8 @@ const schema = {
             return errs
         }).allow(null).allow(''),
         email: Joi.string().email().allow(null).allow(''),
+        address: Joi.string().max(255).allow(null).allow(''),
+        note: Joi.string().max(255).allow(null).allow(''),
         is_active: Joi.string().valid('0','1').allow(null).allow(''),
         created_date: Joi.any().strip(),
         // created_user_id: Joi.any().strip(),
@@ -43,7 +44,6 @@ const schema = {
 
             return errs
         }),
-        address: Joi.string().max(255).allow(null).allow(''),
         phone: Joi.string().max(30).regex(/^[0-9]*$/).error(errs => {
             errs.forEach(err => {
                 if (err.code === 'string.pattern.base') {
@@ -54,6 +54,8 @@ const schema = {
             return errs
         }).allow(null).allow(''),
         email: Joi.string().email().allow(null).allow(''),
+        address: Joi.string().max(255).allow(null).allow(''),
+        note: Joi.string().max(255).allow(null).allow(''),
         is_active: Joi.string().valid('0','1').allow(null).allow(''),
         created_date: Joi.any().strip(),
         // created_user_id: Joi.any().strip(),

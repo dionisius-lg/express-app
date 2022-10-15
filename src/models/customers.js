@@ -1,6 +1,6 @@
 const { getAll, getDetail, insertData, updateData, deleteData } = require('../helpers/dbQuery')
 const { success, error } = require('../helpers/response')
-const table = 'product_units'
+const table = 'customers'
 
 exports.getAll = async (conditions) => {
     if (conditions.is_active === undefined) {
@@ -8,7 +8,7 @@ exports.getAll = async (conditions) => {
     }
 
     const conditionTypes = {
-        'like': ['name']
+        'like': ['fullname', 'phone', 'email']
     }
 
     let customConditions = []

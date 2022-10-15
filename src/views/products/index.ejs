@@ -11,12 +11,12 @@
                 <form id="formFilter" action="<%= currentUrl %>" method="get" autocomplete="off">
                     <div class="form-row">
                         <div class="form-group col-md-2">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name" class="form-control form-control-sm rounded-0" value="<%= query.name %>">
-                        </div>
-                        <div class="form-group col-md-2">
                             <label class="form-label">SKU</label>
                             <input type="text" name="sku" class="form-control form-control-sm rounded-0" value="<%= query.sku %>">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="form-label">Name</label>
+                            <input type="text" name="name" class="form-control form-control-sm rounded-0" value="<%= query.name %>">
                         </div>
                         <div class="form-group col-md-2">
                             <label class="form-label">Category</label>
@@ -54,13 +54,13 @@
                     <thead>
                         <tr>
                             <th class="text-nowrap" scope="col">No</th>
-                            <th class="text-nowrap" scope="col">Name</th>
                             <th class="text-nowrap" scope="col">SKU</th>
+                            <th class="text-nowrap" scope="col">Name</th>
                             <th class="text-nowrap" scope="col">Category</th>
                             <th class="text-nowrap" scope="col">Unit</th>
                             <th class="text-nowrap" scope="col">Buy Price</th>
+                            <th class="text-nowrap" scope="col">Sell Price</th>
                             <th class="text-nowrap" scope="col">Stock</th>
-                            <th class="text-nowrap" scope="col">Is Active</th>
                             <th class="text-nowrap" scope="col">Action</th>
                         </tr>
                     </thead>
@@ -69,13 +69,13 @@
                             <% products.data.map((row, i) => { %>
                                 <tr>
                                     <td class="text-nowrap" scope="row"><%= paging.index[i] %></td>
-                                    <td class="text-nowrap"><%= row.name %></td>
                                     <td class="text-nowrap"><%= row.sku %></td>
+                                    <td class="text-nowrap"><%= row.name %></td>
                                     <td class="text-nowrap"><%= row.product_category %></td>
                                     <td class="text-nowrap"><%= row.product_unit %></td>
-                                    <td class="text-nowrap"><%= row.buy_price %></td>
+                                    <td class="text-nowrap currency"><%= row.buy_price %></td>
+                                    <td class="text-nowrap currency"><%= row.sell_price %></td>
                                     <td class="text-nowrap"><%= row.stock %></td>
-                                    <td><i class="fas <%= row.is_active === 1 ? 'fa-check text-info' : 'fa-times text-success' %>"></i></td>
                                     <td class="text-nowrap">
                                         <button type="button" class="btn btn-sm btn-warning rounded-0 btn-detail" title="detail" onclick="detailData('<%= row.id %>')">
                                             <i class="far fa-eye fa-fw"></i>
@@ -89,7 +89,7 @@
                             
                         <% } else { %>
                             <tr>
-                                <td colspan="9">No data</td>
+                                <td colspan="9">No data found</td>
                             </tr>
                         <% } %>
                     </tbody>
@@ -103,7 +103,7 @@
 
 <div class="modal fade" id="modalData" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <form class="modal-content">
+        <form class="modal-content" autocomplete="off">
             <div class="modal-header bg-primary">
                 <h5 class="modal-title">Modal title</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
@@ -112,13 +112,13 @@
             </div>
             <div class="modal-body row">
                 <div class="form-group col-md-6">
-                    <label class="form-label">Name</label>
-                    <input type="text" name="name" class="form-control form-control-sm rounded-0" autofocus>
+                    <label class="form-label">SKU</label>
+                    <input type="text" name="sku" class="form-control form-control-sm rounded-0" autofocus>
                     <span class="invalid-feedback"></span>
                 </div>
                 <div class="form-group col-md-6">
-                    <label class="form-label">SKU</label>
-                    <input type="text" name="sku" class="form-control form-control-sm rounded-0">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" class="form-control form-control-sm rounded-0">
                     <span class="invalid-feedback"></span>
                 </div>
                 <div class="form-group col-md-6">
@@ -143,44 +143,39 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label class="form-label">Buy Price</label>
-                    <input type="text" name="buy_price" class="form-control form-control-sm rounded-0">
+                    <input type="text" name="buy_price" class="form-control form-control-sm rounded-0 currency">
+                    <span class="invalid-feedback"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="form-label">Sell Price</label>
+                    <input type="text" name="sell_price" class="form-control form-control-sm rounded-0 currency">
                     <span class="invalid-feedback"></span>
                 </div>
                 <div class="form-group col-md-6">
                     <label class="form-label">Stock</label>
-                    <input type="text" name="stock" class="form-control form-control-sm rounded-0" readonly>
+                    <input type="text" name="stock" class="form-control form-control-sm rounded-0 numeric" placeholder="0" readonly>
                     <span class="invalid-feedback"></span>
                 </div>
                 <div class="form-group col-md-12">
                     <label class="form-label">Description</label>
-                    <textarea name="description" rows="3" class="form-control form-control-sm rounded-0"></textarea>
+                    <textarea name="note" rows="3" class="form-control form-control-sm rounded-0"></textarea>
                     <span class="invalid-feedback"></span>
                 </div>
                 <div class="form-group col-md-6">
                     <label class="form-label">Created Date</label>
-                    <input type="text" name="created_date" class="form-control form-control-sm rounded-0" readonly>
-                    <span class="invalid-feedback"></span>
+                    <input type="text" name="created_date" class="form-control-plaintext form-control-sm" readonly>
                 </div>
                 <div class="form-group col-md-6">
                     <label class="form-label">Created By</label>
-                    <input type="text" name="created_user" class="form-control form-control-sm rounded-0" readonly>
-                    <span class="invalid-feedback"></span>
+                    <input type="text" name="created_user" class="form-control-plaintext form-control-sm" readonly>
                 </div>
                 <div class="form-group col-md-6">
                     <label class="form-label">Last Updated Date</label>
-                    <input type="text" name="updated_date" class="form-control form-control-sm rounded-0" readonly>
-                    <span class="invalid-feedback"></span>
+                    <input type="text" name="updated_date" class="form-control-plaintext form-control-sm" readonly>
                 </div>
                 <div class="form-group col-md-6">
                     <label class="form-label">Last Update By</label>
-                    <input type="text" name="updated_user" class="form-control form-control-sm rounded-0" readonly>
-                    <span class="invalid-feedback"></span>
-                </div>
-                <div class="form-group col-md-12">
-                    <div class="icheck-primary">
-                        <input type="checkbox" name="is_active" id="isActive" value="1">
-                        <label for="isActive">Active</label>
-                    </div>
+                    <input type="text" name="updated_user" class="form-control-plaintext form-control-sm" readonly>
                 </div>
             </div>
             <div class="modal-footer">
@@ -205,9 +200,7 @@
             dataType: 'json',
             beforeSend: () => {
                 formData.find('.invalid-feedback, .form-error').empty()
-                formData.find('.btn-submit, .btn-cancel').attr({'disabled': true})
-                formData.find('.btn-submit').prepend('<span class="spinner-border spinner-border-sm mr-2">&nbsp;</span>')
-                modalData.find('.close').attr({'disabled': true})
+                formData.find('.btn-submit').attr({'disabled': true}).prepend('<span class="spinner-border spinner-border-sm mr-2">&nbsp;</span>')
             },
             success: (res) => {
                 if (res.success) {
@@ -230,13 +223,12 @@
                                 }
                             })
 
-                            formData.find('.btn-submit, .btn-cancel').attr({'disabled': false})
-                            formData.find('.btn-submit span').remove()
-                            modalData.find('.close').attr({'disabled': false})
+                            formData.find('.btn-submit').attr({'disabled': false}).find('span').remove()
                             return
                         }
                     }
 
+                    formData.find('.btn-submit').attr({'disabled': false}).find('span').remove()
                     modalData.modal('hide')
                     toastr.error(res.message)
                 }
@@ -249,7 +241,6 @@
         formData.attr({'action': '<%= currentUrl %>/create'})
         formData.find('input, select, textarea').removeClass('is-invalid')
         formData.find('.invalid-feedback, .form-error').empty()
-        formData.find('[name="is_active"]').prop('checked', true).attr('disabled', true)
         modalData.find('.modal-header .modal-title').html('Add New Data')
         modalData.modal('show')
     }
@@ -265,7 +256,6 @@
                     formData.attr({'action': `<%= currentUrl %>/update/${id}`})
                     formData.find('input, select, textarea').removeClass('is-invalid')
                     formData.find('.invalid-feedback, .form-error').empty()
-                    formData.find('[name="is_active"]').attr('disabled', false)
                     modalData.find('.modal-header .modal-title').html('Detail Data')
                 },
                 success: (res) => {
@@ -276,14 +266,10 @@
                                 let elementType = element.prop('type')
 
                                 if (elementType !== undefined) {
-                                    if (['is_active'].includes(key)) {
-                                        element.prop('checked', val == 1 ? true : false)
-                                    } else {
-                                        element.val(val)
+                                    element.val(val)
 
-                                        if (elementType === 'select-one' && element.find(`option[value="${val}"]`).length === 0) {
-                                            element.val(null)
-                                        }
+                                    if (elementType === 'select-one' && element.find(`option[value="${val}"]`).length === 0) {
+                                        element.val(null)
                                     }
                                 }
                             })

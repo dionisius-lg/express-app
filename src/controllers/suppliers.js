@@ -50,7 +50,7 @@ exports.index = async (req, res, next) => {
 
     return res.render('adminLayout', {
         view: `${currentPath}`,
-        pageTitle: 'Suppliers',
+        title: 'Suppliers',
         ...result
     })
 }
@@ -68,10 +68,6 @@ exports.detail = async (req, res, next) => {
 exports.create = async (req, res, next) => {
     const { body } = req
 
-    if (!('is_active' in body)) {
-        body.is_active = '1'
-    }
-
     body.created_user_id = req.session.user.id
     body.created_date = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
 
@@ -86,10 +82,6 @@ exports.create = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
     const { body, params } = req
-
-    if (!('is_active' in body)) {
-        body.is_active = '0'
-    }
 
     body.updated_user_id = req.session.user.id
     body.updated_date = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
@@ -107,8 +99,11 @@ exports.update = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
     const { params } = req
+    const data = {
+        is_active: '0'   
+    }
 
-    const result = await suppliersModel.delete({
+    const result = await suppliersModel.update(data, {
         id: params.id
     })
 

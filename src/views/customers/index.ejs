@@ -11,8 +11,12 @@
                 <form action="<%= currentUrl %>" method="get" autocomplete="off">
                     <div class="form-row">
                         <div class="form-group col-md-2">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name" class="form-control form-control-sm rounded-0" value="<%= query.name %>">
+                            <label class="form-label">Fullname</label>
+                            <input type="text" name="fullname" class="form-control form-control-sm rounded-0" value="<%= query.fullname %>">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="form-label">Phone</label>
+                            <input type="text" name="phone" class="form-control form-control-sm rounded-0" value="<%= query.phone %>">
                         </div>
                     </div>
                     <div class="row">
@@ -32,16 +36,20 @@
                     <thead>
                         <tr>
                             <th class="text-nowrap" scope="col">No.</th>
-                            <th class="text-nowrap" scope="col" width="80%">Name</th>
+                            <th class="text-nowrap" scope="col">Name</th>
+                            <th class="text-nowrap" scope="col">Phone</th>
+                            <th class="text-nowrap" scope="col">Email</th>
                             <th class="text-nowrap" scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <% if (product_units.total_data > 0) { %>
-                            <% product_units.data.map((row, i) => { %>
+                        <% if (customers.total_data > 0) { %>
+                            <% customers.data.map((row, i) => { %>
                                 <tr>
                                     <td class="text-nowrap" scope="row"><%= paging.index[i] %></td>
-                                    <td class="text-nowrap"><%= row.name %></td>
+                                    <td class="text-nowrap"><%= row.fullname%></td>
+                                    <td class="text-nowrap"><%= row.phone %></td>
+                                    <td class="text-nowrap"><%= row.email %></td>
                                     <td class="text-nowrap">
                                         <button type="button" class="btn btn-sm btn-warning rounded-0 btn-detail" title="detail" onclick="detailData('<%= row.id %>')">
                                             <i class="far fa-eye fa-fw"></i>
@@ -55,7 +63,7 @@
                             
                         <% } else { %>
                             <tr>
-                                <td colspan="4">No data</td>
+                                <td colspan="5">No data</td>
                             </tr>
                         <% } %>
                     </tbody>
@@ -78,8 +86,23 @@
             </div>
             <div class="modal-body row">
                 <div class="form-group col-md-12">
-                    <label class="form-label">Name</label>
-                    <input type="text" name="name" class="form-control form-control-sm rounded-0" autofocus>
+                    <label class="form-label">Fullname</label>
+                    <input type="text" name="fullname" class="form-control form-control-sm rounded-0" autofocus>
+                    <span class="invalid-feedback"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="form-label">Phone</label>
+                    <input type="text" name="phone" class="form-control form-control-sm rounded-0">
+                    <span class="invalid-feedback"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="form-label">Email</label>
+                    <input type="text" name="email" class="form-control form-control-sm rounded-0">
+                    <span class="invalid-feedback"></span>
+                </div>
+                <div class="form-group col-md-12">
+                    <label class="form-label">Address</label>
+                    <textarea name="address" rows="3" class="form-control form-control-sm rounded-0"></textarea>
                     <span class="invalid-feedback"></span>
                 </div>
                 <div class="form-group col-md-6">
@@ -121,7 +144,9 @@
             dataType: 'json',
             beforeSend: () => {
                 formData.find('.invalid-feedback, .form-error').empty()
-                formData.find('.btn-submit').attr({'disabled': true}).prepend('<span class="spinner-border spinner-border-sm mr-2">&nbsp;</span>')
+                formData.find('.btn-submit, .btn-cancel').attr({'disabled': true})
+                formData.find('.btn-submit').prepend('<span class="spinner-border spinner-border-sm mr-2">&nbsp;</span>')
+                modalData.find('.close').attr({'disabled': true})
             },
             success: (res) => {
                 if (res.success) {
@@ -142,12 +167,13 @@
                                 }
                             })
 
-                            formData.find('.btn-submit').attr({'disabled': false}).find('span').remove()
+                            formData.find('.btn-submit, .btn-cancel').attr({'disabled': false})
+                            formData.find('.btn-submit span').remove()
+                            modalData.find('.close').attr({'disabled': false})
                             return
                         }
                     }
 
-                    formData.find('.btn-submit').attr({'disabled': false}).find('span').remove()
                     modalData.modal('hide')
                     toastr.error(res.message)
                 }

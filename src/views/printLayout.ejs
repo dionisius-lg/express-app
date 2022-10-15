@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="all,follow">
+        <title>Administator</title>
+
+        <link rel="stylesheet" href="/vendor/font-awesome/css/all.min.css">
+        <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+
+        <style>
+            body {
+                font-family: "Consolas", "monaco", monospace;
+                font-size: 12px;
+            }
+            .table {
+                padding: 30px !important;
+            }
+            .dotted {
+                border: none !important;
+                border-top: 1.5px dotted !important;
+            }
+            .dashed {
+                border: none !important;
+                border-top: 1.5px dashed !important;
+            }
+            .solid {
+                border: none !important;
+                border-top: 1.5px solid !important;
+            }
+            .double {
+                border: none !important;
+                border-top: 1.5px double !important;
+            }
+        </style>
+
+        <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="/vendor/jquery/jquery.min.js"></script>
+        <script src="/vendor/moment/moment.min.js"></script>
+        <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    </head>
+
+    <body>
+        <%- isEjs(view) ? include(isEjs(view)) : '' %>
+        <script src="/js/common.js"></script>
+        <script>
+            $(document).ready(() => {
+                window.print()
+            })
+        </script>
+    </body>
+</html>

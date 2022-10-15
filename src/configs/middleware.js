@@ -33,7 +33,8 @@ exports.verifyLogout = async (req, res, next) => {
 exports.validation = (schema, property) => {
     return (req, res, next) => {
         const validate = schema.validate(req[property], {
-            abortEarly: false
+            abortEarly: false,
+            convert: true
         })
 
         if (validate.error) {
@@ -58,6 +59,8 @@ exports.validation = (schema, property) => {
             req.flash('formError', JSON.stringify(errors))
             return res.status(400).redirect('back')
         } else {
+            // console.log(validate)
+            req.body = validate.value
             next()
         }
     }

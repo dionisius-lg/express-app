@@ -15,6 +15,14 @@ exports.isEmpty = (val) => {
     )
 }
 
+exports.isNumeric = (val) => {
+    return (
+        val === undefined ||
+        val === null ||
+        !isNaN(Number(val.toString()))
+    )
+}
+
 exports.isJson = (val) => {
     value = typeof val !== "string" ? JSON.stringify(val) : val
 

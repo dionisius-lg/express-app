@@ -1,0 +1,96 @@
+<table class="table table-borderless my-1" style="width: 450px;">
+    <tr>
+        <td class="text-center py-0" colspan="4">
+            <h5>Express POS</h5>
+            <hr class="m-0 dashed">
+        </td>
+    </tr>
+    <tr>
+        <td class="text-left py-0" colspan="2" style="width: 180px;"><%- sales.data.invoice %></td>
+        <td class="text-left py-0" colspan="2" style="width: 270px;">Cashier &nbsp;: <%- sales.data.created_user %></td>
+    </tr>
+    <tr>
+        <td class="text-left py-0" colspan="2" style="width: 180px;"><%- sales.data.created_date %></td>
+        <td class="text-left py-0" colspan="2" style="width: 270px;">Customer : <%- sales.data.customer_name %></td>
+    </tr>
+    <tr>
+        <td class="text-center py-0" colspan="4">
+            <hr class="m-0 double">
+        </td>
+    </tr>
+</table>
+
+<table class="table table-borderless my-1" style="width: 450px;">
+    <% if (sales_items.total_data > 0) { %>
+        <% sales_items.data.map((row, i) => { %>
+            <tr>
+                <td class="text-left py-0" style="width: 300px;"><%= row.product %> - <%= row.product_unit %></td>
+                <td class="text-left py-0 text-right" style="width: 10px;"><%= row.qty %></td>
+                <td class="text-left py-0 text-right" style="width: 60px;"><%= row.sell_price %></td>
+                <td class="text-left py-0 text-right" style="width: 80px;"><%= row.total %></td>
+            </tr>
+        <% }) %>
+    <% } else { %>
+        <tr>
+            <td colspan="4"> --- </td>
+        </tr>
+    <% } %>
+</table>
+
+<table class="table table-borderless my-1" style="width: 450px;">
+    <tr>
+        <td class="text-center py-0" colspan="3">
+            <hr class="m-0 dashed">
+        </td>
+    </tr>
+    <tr>
+        <td class="text-left py-0" style="width: 270px;"></td>
+        <td class="text-left py-0 text-right" style="width: 100px;">Sub Total</td>
+        <td class="text-left py-0 text-right" style="width: 80px;"><%= sub_total %></td>
+    </tr>
+    <tr>
+        <td class="text-left py-0" style="width: 270px;"></td>
+        <td class="text-left py-0 text-right" style="width: 100px;">Disc.</td>
+        <td class="text-left py-0 text-right" style="width: 80px;"><%= discount %></td>
+    </tr>
+    <tr>
+        <td class="text-left py-0" style="width: 270px;"></td>
+        <td class="text-center py-0" colspan="2" style="width: 180px;">
+            <hr class="m-0 dashed">
+        </td>
+    </tr>
+    <tr>
+        <td class="text-left py-0" style="width: 270px;"></td>
+        <td class="text-left py-0 text-right" style="width: 100px;">Grand Total</td>
+        <td class="text-left py-0 text-right" style="width: 80px;"><%= grand_total %></td>
+    </tr>
+    <tr>
+        <td class="text-left py-0" style="width: 270px;"></td>
+        <td class="text-center py-0" colspan="2" style="width: 180px;">
+            <hr class="m-0 dashed">
+        </td>
+    </tr>
+    <tr>
+        <td class="text-left py-0" style="width: 270px;"></td>
+        <td class="text-left py-0 text-right" style="width: 100px;">Cash</td>
+        <td class="text-left py-0 text-right" style="width: 80px;"><%= sales.data.pay_cash %></td>
+    </tr>
+    <tr>
+        <td class="text-left py-0" style="width: 270px;"></td>
+        <td class="text-left py-0 text-right" style="width: 100px;">Change</td>
+        <td class="text-left py-0 text-right" style="width: 80px;"><%= sales.data.pay_change %></td>
+    </tr>
+</table>
+
+<table class="table table-borderless my-1" style="width: 450px;">
+    <tr>
+        <td class="text-center py-0">
+            <hr class="m-0 dashed">
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">
+            *** Thank you ***
+        </td>
+    </tr>
+</table>

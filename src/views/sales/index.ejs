@@ -1,0 +1,1043 @@
+<div class="row section-top">
+    <div id="groupUsers" class="col-md-5">
+        <div class="card">
+            <div class="card-body pb-0 pb-sm-2">
+                <div class="form-group row">
+                    <label class="form-label col-md-3">Date</label>
+                    <div class="col-md-9">
+                        <input type="text" name="sales_date" id="salesDate" class="form-control form-control-sm rounded-0 date" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="form-label col-md-3">User</label>
+                    <div class="col-md-9">
+                        <input type="text" name="user" id="salesUser" class="form-control form-control-sm rounded-0" value="<%- session.user.fullname %>" autocomplete="off" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="form-label col-md-3">Customer</label>
+                    <div class="input-group input-group-sm col-md-9">
+                        <input type="hidden" name="customer_id" readonly>
+                        <input type="text" name="customer" class="form-control form-control-sm rounded-0" autocomplete="off" readonly>
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-sm btn-info rounded-0" onclick="showModalCustomers()">
+                                <span class="fas fa-search fa-fw"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="groupProduct" class="col-md-7">
+        <div class="card">
+            <div class="card-body pb-0 pb-sm-2 row">
+                <div class="form-group col-md-8 order-1 order-md-1">
+                    <div class="row">
+                        <label class="form-label col-md-3">Product</label>
+                        <div class="input-group input-group-sm col-md-8">
+                            <input type="text" name="name" class="form-control form-control-sm rounded-0" autocomplete="off" readonly>
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-sm btn-info rounded-0" onclick="showModalProducts()">
+                                    <span class="fas fa-search fa-fw"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 order-4 order-md-2">
+                    <div class="row">
+                        <label class="form-label col-md-4"><span class="">Stock</span></label>
+                        <div class="col-md-8">
+                            <input type="text" name="stock" class="form-control form-control-sm rounded-0 numeric text-right" autocomplete="off" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-8 order-2 order-md-3">
+                    <div class="row">
+                        <label class="form-label col-md-3 "><span class="">SKU</span></label>
+                        <div class="col-md-8">
+                            <input type="text" name="sku" id="salesSKU" class="form-control form-control-sm rounded-0" autocomplete="off" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 order-3 order-md-4">
+                    <div class="row">
+                        <label class="form-label col-md-4"><span class="">Qty</span></label>
+                        <div class="col-md-8">
+                            <input type="text" name="qty" class="form-control form-control-sm rounded-0 numeric text-right" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 order-5 order-md-5 text-right">
+                    <button type="button" class="btn btn-sm btn-secondary rounded-0 btn-add">Add Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body table-responsive">
+                <table id="tableProducts" class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-nowrap" scope="col">No</th>
+                            <th class="text-nowrap" scope="col">SKU</th>
+                            <th class="text-nowrap" scope="col">Product</th>
+                            <th class="text-nowrap" scope="col">Price</th>
+                            <th class="text-nowrap" scope="col">Qty</th>
+                            <th class="text-nowrap" scope="col">Discount</th>
+                            <th class="text-nowrap" scope="col">Total</th>
+                            <th class="text-nowrap" scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="8">No data found</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div id="groupSummaries" class="col-md-4">
+        <div class="card same-height">
+            <div class="card-body pb-0 pb-sm-2">
+                <div class="form-group row">
+                    <label class="form-label col-md-4">Sub Total</label>
+                    <div class="col-md-8">
+                        <input type="text" name="subtotal" class="form-control form-control-sm rounded-0 currency" readonly>
+                        <input type="hidden" name="total" class="currency" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="form-label col-md-4">Discount</label>
+                    <div class="col-md-8">
+                        <input type="text" name="discount" class="form-control form-control-sm rounded-0 currency">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="groupPayments" class="col-md-4">
+        <div class="card same-height">
+            <div class="card-body pb-0 pb-sm-2">
+                <div class="form-group row">
+                    <label class="form-label col-md-4">Cash</label>
+                    <div class="col-md-8">
+                        <input type="text" name="cash" class="form-control form-control-sm rounded-0 numeric text-right currency">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="form-label col-md-4">Change</label>
+                    <div class="col-md-8">
+                        <input type="text" name="change" class="form-control form-control-sm rounded-0 numeric text-right currency" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="groupInfo" class="col-md-4">
+        <div class="card same-height">
+            <div class="card-body pb-0 pb-sm-2">
+                <h5 class="text-right">
+                    <small class="text-muted">Invoice</small>
+                    <span id="salesInvoice"></span>
+                </h5>
+                <h4 id="labelTotal" class="display-4 text-right">0</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 offset-md-8 d-flex mb-3">
+        <div class="flex-fill pr-1">
+            <button type="button" id="salesReset" class="btn btn-warning btn-block rounded-0">Reset</button>
+        </div>
+        <div class="flex-fill pl-1">
+            <button type="button" id="salesCheckout" class="btn btn-primary btn-block rounded-0">Checkout</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCustomers" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title">Select Data</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-row align-items-center mb-3" autocomplete="off">
+                    <div class="col-5">
+                        <input type="text" name="fullname" class="form-control form-control-sm rounded-0" placeholder="Search Fullname...">
+                    </div>
+                    <div class="col-5">
+                        <input type="text" name="phone" class="form-control form-control-sm rounded-0" placeholder="Search Phone...">
+                    </div>
+                    <div class="col-2">
+                        <button type="submit" class="btn btn-sm btn-info btn-block rounded-0 btn-submit">
+                            <span class="d-none d-sm-block">Search</span>
+                            <span class="fas fa-search fa-fw d-sm-none"></span>
+                        </button>
+                    </div>
+                </form>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-nowrap" scope="col">Fullname</th>
+                                <th class="text-nowrap" scope="col">Phone</th>
+                                <th class="text-nowrap" scope="col">Email</th>
+                                <th class="text-nowrap" scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="text-nowrap text-center">No data found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-nav text-right mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalProducts" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title">Select Data</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-row align-items-center mb-3" autocomplete="off">
+                    <div class="col-5">
+                        <input type="text" name="sku" class="form-control form-control-sm rounded-0" placeholder="Search SKU...">
+                    </div>
+                    <div class="col-5">
+                        <input type="text" name="name" class="form-control form-control-sm rounded-0" placeholder="Search Name...">
+                    </div>
+                    <div class="col-2">
+                        <button type="submit" class="btn btn-sm btn-info btn-block rounded-0 btn-submit">
+                            <span class="d-none d-sm-block">Search</span>
+                            <span class="fas fa-search fa-fw d-sm-none"></span>
+                        </button>
+                    </div>
+                </form>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-nowrap" scope="col">SKU</th>
+                                <th class="text-nowrap" scope="col">Name</th>
+                                <th class="text-nowrap" scope="col">Qty</th>
+                                <th class="text-nowrap" scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="text-nowrap text-center">No data found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-nav text-right mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalData" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title">Edit Data</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form autocomplete="off">
+                <div class="modal-body">
+                    <input type="hidden" name="data_id">
+                    <div class="form-group row">
+                        <label class="form-label col-md-4">Qty</label>
+                        <div class="col-md-8">
+                            <input type="text" name="qty" class="form-control form-control-sm rounded-0 text-right numeric" autofocus>
+                            <span class="form-error text-danger text-small"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="form-label col-md-4">Discount</label>
+                        <div class="col-md-8">
+                            <input type="text" name="discount" class="form-control form-control-sm rounded-0 currency">
+                            <span class="form-error text-danger text-small"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-sm btn-primary rounded-0 btn-submit">Save</button>
+                    <button type="button" class="btn btn-sm btn-default rounded-0 btn-cancel" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const modalData = $('#modalData')
+    const modalCustomers = $('#modalCustomers')
+    const modalProducts = $('#modalProducts')
+
+    const bsSwal = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-sm btn-primary rounded-0 mr-2',
+            cancelButton: 'btn btn-sm btn-default rounded-0'
+        },
+        buttonsStyling: false
+    })
+
+    let currentSales = {
+        invoice: null,
+        customer_id: null,
+        pay: { cash: 0, change: 0 },
+        products: [],
+        summaries: { subtotal: 0, discount: 0, total: 0 }
+    }
+
+    modalData.on('hidden.bs.modal', () => {
+        modalData.find('form .form-error').empty
+    })
+
+    modalData.find('form').on('submit', (e) => {
+        e.preventDefault()
+        let data = {}
+        let error = {}
+
+        $(e.currentTarget).serializeArray().map((i) => {
+            data[i.name] = i.value.toString().replace(/,/g, '')
+        })
+
+        if (data.qty.trim().length === 0) {
+            error.qty = 'Qty cannot empty'
+        }
+
+        if (parseInt(data.discount) < 0) {
+            error.discount = 'Discount is invalid'
+        }
+
+        if (currentSales.products.length > 0 && Object.keys(error).length === 0) {
+            currentSales.products.forEach((row, i) => {
+                if (row.id === Number(data.data_id)) {
+                    let stock = (parseInt(row.stock) + parseInt(row.qty) - parseInt(data.qty))
+                    let total = parseInt(row.sell_price) * parseInt(data.qty)
+
+                    if (parseInt(row.qty) > stock) {
+                        error.qty = 'Qty exceed stock'
+                    }
+
+                    if (total < parseInt(data.discount)) {
+                        error.discount = 'Discount exceed price'
+                    }
+
+                    if (Object.keys(error).length) {
+                        return
+                    }
+
+                    currentSales.products[i].stock = stock.toString()
+                    currentSales.products[i].qty = data.qty
+                    currentSales.products[i].discount = data.discount
+                    currentSales.products[i].total = (total - parseInt(data.discount)).toString()
+                }
+            })
+        }
+
+        if (Object.keys(error).length > 0) {
+            Object.keys(error).forEach((key) => {
+                $(e.currentTarget).find(`[name="${key}"]`).next('.form-error').html(error[key])
+            })
+
+            return
+        }
+
+        loadCurrentSales()
+        modalData.modal('hide')
+    })
+
+    modalCustomers.find('form').on('submit', (e) => {
+        e.preventDefault()
+        getCustomers($(e.currentTarget).serialize()) 
+    })
+
+    modalCustomers.find('table').on('click', '.btn-select', (e) => {
+        if (e.currentTarget.classList.contains('disabled')) {
+            return false
+        }
+
+        let attrData = e.currentTarget.getAttribute('data-row')
+        let dataRow = JSON.parse(attrData.replace(/'/g, '\"'))
+
+        $('#groupUsers input[name="customer_id"]').val(dataRow.id).trigger('change')
+        $('#groupUsers input[name="customer"]').val(dataRow.fullname).trigger('change')
+
+        modalCustomers.modal('hide')
+    })
+
+    modalCustomers.find('table-nav').on('click', 'button', (e) => {
+        if (e.currentTarget.classList.contains('disabled')) {
+            return false
+        }
+
+        const dataQuery = e.currentTarget.getAttribute('data-query')
+        getCustomers(dataQuery)
+    })
+
+    modalProducts.find('form').on('submit', (e) => {
+        e.preventDefault()
+        getProducts($(e.currentTarget).serialize()) 
+    })
+
+    modalProducts.find('table').on('click', '.btn-select', (e) => {
+        if (e.currentTarget.classList.contains('disabled')) {
+            return false
+        }
+
+        let attrData = e.currentTarget.getAttribute('data-row')
+        let dataRow = JSON.parse(attrData.replace(/'/g, '\"'))
+
+        $('#groupProduct .btn-add').attr('data-row', attrData)
+
+        Object.keys(dataRow).forEach((key) => {
+            if (!['id'].includes(key)) {
+                $(`#groupProduct input[name="${key}"]`).val(dataRow[key]).trigger('change')
+            }
+        })
+
+        modalProducts.modal('hide')
+        $('#groupProduct input[name="qty"]').val(1).trigger('focus')
+    })
+
+    modalProducts.find('table-nav').on('click', 'button', (e) => {
+        if (e.currentTarget.classList.contains('disabled')) {
+            return false
+        }
+
+        const dataQuery = e.currentTarget.getAttribute('data-query')
+        getProducts(dataQuery)
+    })
+
+    $('#groupProduct input[name="qty"]').on('keypress', (e) => {
+        const thisKeyCode = (e.keyCode ? e.keyCode : e.which)
+
+        if (thisKeyCode === 13) {
+            $('#groupProduct .btn-add').trigger('click')
+        }
+    });
+
+    $('#groupProduct').on('click', '.btn-add', (e) => {
+        e.preventDefault()
+
+        let dataRow = e.currentTarget.getAttribute('data-row')
+        let dataQty = $('#groupProduct input[name="qty"]').val()
+
+        if (dataRow && dataRow !== null && dataRow !== '') {
+            if (dataQty === null || dataQty === '' || !$.isNumeric(dataQty)) {
+                bsSwal.fire({
+                    icon: 'error',
+                    title: 'Qty is required',
+                    confirmButtonText: 'Confirm'
+                })
+
+                $('#groupProduct input[name="qty"]').trigger('focus')
+                return false
+            }
+
+            dataRow = JSON.parse(dataRow.replace(/'/g, '\"'))
+
+            if (parseInt(dataQty) > parseInt(dataRow.stock)) {
+                bsSwal.fire({
+                    icon: 'error',
+                    title: 'Qty exceed stock',
+                    confirmButtonText: 'Confirm'
+                })
+
+                $('#groupProduct input[name="qty"]').trigger('focus')
+                return false
+            }
+
+            dataRow = {
+                ...dataRow,
+                qty: dataQty,
+                total: parseInt(dataRow.sell_price) * parseInt(dataQty)
+            }
+
+            if (currentSales.products.length > 0) {
+                for (let i in currentSales.products) {
+                    if (currentSales.products[i].id === dataRow.id) {
+                        currentSales.products[i] = {
+                            ...dataRow,
+                            qty: parseInt(currentSales.products[i].qty) + parseInt(dataRow.qty),
+                            discount: typeof currentSales.products[i] !== 'undefined' ? currentSales.products[i].discount : 0,
+                            total: dataRow.sell_price * (parseInt(currentSales.products[i].qty) + parseInt(dataRow.qty))
+                        }
+
+                        toastr.success('Success. Product successfully added')
+                        return loadCurrentSales()
+                    }
+                }
+            }
+
+            currentSales.products.push({ ...dataRow, discount: 0 })
+
+            toastr.success('Success. Product successfully added')
+            return loadCurrentSales()
+        }
+
+        bsSwal.fire({
+            icon: 'error',
+            title: 'Product not selected',
+            confirmButtonText: 'Confirm'
+        })
+        return false
+    })
+
+    $('#groupSummaries input[name="discount"]').on('keyup', (e) => {
+        const thisKeyCode = (e.keyCode ? e.keyCode : e.which)
+
+        if (thisKeyCode !== 13) {
+            let val = e.currentTarget.value.toString().replace(/,/g, '')
+            let salesDiscount = (val !== null && val !== '' && $.isNumeric(val)) ? parseInt(val) : 0
+
+            // if (parseInt(currentSales.summaries.subtotal) >= salesDiscount) {
+                currentSales.summaries.discount = salesDiscount
+                loadCurrentSales()
+            // }
+        }
+    });
+
+    $('#groupSummaries input[name="total"]').on('change', (e) => {
+        $('#labelTotal').html(e.currentTarget.value.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'))
+    })
+
+    $('#groupPayments input[name="cash"]').on('keyup', (e) => {
+        const thisKeyCode = (e.keyCode ? e.keyCode : e.which)
+
+        if (thisKeyCode !== 13) {
+            let cash   = e.currentTarget.value.toString().replace(/,/g, '')
+            let total  = currentSales.summaries.total
+            let change = parseInt(cash) - total
+            let target = $('#groupPayments input[name="change"]')
+
+            target.val(0)
+
+            if (change >= 0 ) {
+                target.val(change).trigger('change')
+            }
+
+            target.trigger('change')
+        }
+    });
+
+    $('#groupPayments input[name="cash"]').on('blur', (e) => {
+        let cash   = e.currentTarget.value.toString().replace(/,/g, '')
+        let total  = currentSales.summaries.total
+        let change = parseInt(cash) - total
+
+        if (change < 0) {
+            return bsSwal.fire({
+                icon: 'error',
+                title: 'Cash is invalid',
+                confirmButtonText: 'Confirm'
+            })
+        }
+    })
+
+    $('#groupSummaries input[name="discount"]').on('blur', (e) => {
+        let discount = e.currentTarget.value.toString().replace(/,/g, '')
+        let subtotal = currentSales.summaries.total
+
+        if (parseInt(discount) > parseInt(subtotal) || parseInt(discount) < 0) {
+            return bsSwal.fire({
+                icon: 'error',
+                title: 'Discount is invalid',
+                confirmButtonText: 'Confirm'
+            })
+        }
+    })
+
+    $('#salesReset').on('click', (e) => {
+        bsSwal.fire({
+            title: 'Reset current data?',
+            text: 'This action cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Confirm'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                currentSales = {
+                    products: [],
+                    summaries: { subtotal: 0, discount: 0, total: 0 }
+                }
+
+                loadCurrentSales()
+            }
+        })
+    })
+
+    $('#salesCheckout').on('click', (e) => {
+        if (currentSales.products.length === 0) {
+            return bsSwal.fire({
+                icon: 'error',
+                title: 'No item selected',
+                confirmButtonText: 'Confirm'
+            })
+        }
+
+        let discount   = currentSales.summaries.discount
+        let subtotal   = currentSales.summaries.subtotal
+        let total      = currentSales.summaries.total
+        let cash       = $('#groupPayments input[name="cash"]').val().toString().replace(/,/g, '')
+        let change     = $('#groupPayments input[name="change"]').val().toString().replace(/,/g, '')
+        let customerId = $('#groupUsers input[name="customer_id"]').val()
+
+        if (parseInt(discount) > parseInt(subtotal)) {
+            return bsSwal.fire({
+                icon: 'error',
+                title: 'Discount is invalid',
+                confirmButtonText: 'Confirm'
+            })
+        }
+
+        if (typeof cash === 'string' && cash.trim().length === 0) {
+            return bsSwal.fire({
+                icon: 'error',
+                title: 'Cash is required',
+                confirmButtonText: 'Confirm'
+            })
+        }
+
+        if ((parseInt(cash) - parseInt(total)) < 0) {
+            return bsSwal.fire({
+                icon: 'error',
+                title: 'Cash is invalid',
+                confirmButtonText: 'Confirm'
+            })
+        }
+
+        currentSales.pay = { cash: cash, change: change }
+
+        if (customerId != '') {
+            currentSales.customer_id = customerId
+        }
+
+        bsSwal.fire({
+            title: 'Checkout current data?',
+            text: 'Current data will be reset after successfully saved.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Confirm'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveCurrentSales()
+            }
+        })
+    })
+
+    function saveCurrentSales() {
+        let requestUrl = `<%= currentUrl %>/create`
+
+        $.ajax({
+            url: requestUrl,
+            type: 'post',
+            data: JSON.stringify(currentSales),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: (res) => {
+                console.log(res.data.id)
+                if (res) {
+                    toastr.success('Success. Data successfully saved')
+
+                    setTimeout(function() {
+                        window.open(`<%= currentUrl %>/print/${res.data.id}`, '_blank').focus()
+                    }, 1000)
+
+                    $('#groupPayments').find('input[name="cash"], input[name="change"]').val(0)
+
+                    currentSales = {
+                        invoice: null,
+                        customer_id: null,
+                        pay: { cash: 0, change: 0 },
+                        products: [],
+                        summaries: { subtotal: 0, discount: 0, total: 0 }
+                    }
+
+                    return loadCurrentSales()
+                }
+
+                toastr.error('Error. Failed to save data')
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                console.log(jqXHR.status + '|' + textStatus + '|' + errorThrown)
+            }
+        })
+        let checkOutData = {}
+        currentSales
+    }
+
+    function detailData(id) {
+        if (id && $.isNumeric(id)) {
+            let filterCurrentSalesProduct = currentSales.products.filter((row) => {
+                return row.id === id
+            })
+
+            if (filterCurrentSalesProduct.length) {
+                modalData.find('input[name="data_id"]').val(filterCurrentSalesProduct[0].id)
+                modalData.find('input[name="qty"]').val(filterCurrentSalesProduct[0].qty)
+                modalData.find('input[name="discount"]').val(filterCurrentSalesProduct[0].discount)
+                modalData.modal('show')
+                return
+            }
+        }
+
+        return bsSwal.fire({
+            icon: 'error',
+            title: 'Oops..',
+            text: 'Please try again.',
+            confirmButtonText: 'Confirm'
+        })
+    }
+
+    function deleteData(id) {
+        if (id && $.isNumeric(id)) {
+            bsSwal.fire({
+                title: 'Delete this data?',
+                text: 'This action cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Confirm'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    currentSales.products = currentSales.products.filter((row) => {
+                        return row.id !== id
+                    })
+
+                    loadCurrentSales()
+                }
+            })
+        }
+    }
+
+    function showModalCustomers() {
+        modalCustomers.modal('show')
+        getCustomers()
+    }
+
+    function showModalProducts() {
+        modalProducts.modal('show')
+        getProducts()
+    }
+
+    function getCustomers(param) {
+        const tableBody = modalCustomers.find('table tbody')
+        const tableNav = modalCustomers.find('.table-nav')
+
+        let requestUrl = `<%= currentUrl %>/customers`
+
+        if (param && param !== null) {
+            requestUrl += `?${param}`
+        }
+
+        $.ajax({
+            url: requestUrl,
+            type: 'get',
+            dataType: 'json',
+            beforeSend: () => {
+                tableBody.html(`<tr><td colspan="4" class="text-nowrap text-center">Please wait...</td></tr>`)
+            },
+            success: (res) => {
+                if (res !== null && typeof res === 'object') {
+                    if (res.success) {
+                        tableBody.empty()
+
+                        res.data.map((row, i) => {
+                            let dataRow = JSON.stringify(row).replace(/"/g, "\'")
+
+                            tableBody.append(`<tr>
+                                <td class="text-nowrap">${row.fullname}</td>
+                                <td class="text-nowrap">${row.phone}</td>
+                                <td class="text-nowrap">${row.email}</td>
+                                <td><button type="button" data-row="${dataRow}" class="btn btn-sm btn-primary rounded-0 btn-select">Select</button></td>
+                            </tr>`)
+                        })
+
+                        if (res.hasOwnProperty('paging')) {
+                            let navPrev = {
+                                class: 'btn btn-sm btn-default rounded-0',
+                                query: `page=${res.paging.previous}`
+                            }
+
+                            let navNext = {
+                                class: 'btn btn-sm btn-default rounded-0',
+                                query: `page=${res.paging.next}`
+                            }
+
+                            if (param && param !== null) {
+                                let paramArr = param.split('&')
+
+                                paramArr.forEach((val, i) => {
+                                    if (!val.includes('page')) {
+                                        navPrev.query += `&${val}`
+                                        navNext.query += `&${val}`
+                                    }
+                                })
+                            }
+
+                            if (res.paging.current == res.paging.first) {
+                                navPrev.class += ' disabled'
+                            }
+
+                            if (res.paging.current == res.paging.last) {
+                                navNext.class += ' disabled'
+                            }
+
+                            tableNav.html(`
+                                <button type="button" class="${navPrev.class}" data-query="${navPrev.query}">Prev</button>
+                                <button type="button" class="${navNext.class}" data-query="${navNext.query}">Next</button>
+                            `)
+                        }
+
+                        return
+                    }
+                }
+
+                tableBody.html(`<tr><td colspan="4" class="text-nowrap text-center">No data found</td></tr>`)
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                console.log(jqXHR.status + '|' + textStatus + '|' + errorThrown)
+                tableBody.html(`<tr><td colspan="4" class="text-nowrap text-center">No data found</td></tr>`)
+            }
+        })
+    }
+
+    function getProducts(param) {
+        const tableBody = modalProducts.find('table tbody')
+        const tableNav = modalProducts.find('.table-nav')
+
+        let requestUrl = `<%= currentUrl %>/products`
+
+        if (param && param !== null) {
+            requestUrl += `?${param}`
+        }
+
+        $.ajax({
+            url: requestUrl,
+            type: 'get',
+            dataType: 'json',
+            beforeSend: () => {
+                tableBody.html(`<tr><td colspan="4" class="text-nowrap text-center">Please wait...</td></tr>`)
+            },
+            success: (res) => {
+                if (res !== null && typeof res === 'object') {
+                    if (res.success) {
+                        tableBody.empty()
+
+                        res.data.map((row, i) => {
+                            let filterCurrentSalesProduct = currentSales.products.filter((i) => {
+                                return i.id === row.id
+                            })
+
+                            if (filterCurrentSalesProduct.length) {
+                                row.stock -= parseInt(filterCurrentSalesProduct[0].qty)
+                            }
+
+                            let dataRow = JSON.stringify(row).replace(/"/g, "\'")
+
+                            tableBody.append(`<tr>
+                                <td class="text-nowrap">${row.sku}</td>
+                                <td class="text-nowrap">${row.name} - ${row.product_category} / ${row.product_unit}</td>
+                                <td class="text-nowrap">${row.stock}</td>
+                                <td><button type="button" data-row="${dataRow}" class="btn btn-sm btn-primary rounded-0 btn-select ${row.stock <= 0 ? 'disabled': ''}">Select</button></td>
+                            </tr>`)
+                        })
+
+                        if (res.hasOwnProperty('paging')) {
+                            let navPrev = {
+                                class: 'btn btn-sm btn-default rounded-0',
+                                query: `page=${res.paging.previous}`
+                            }
+
+                            let navNext = {
+                                class: 'btn btn-sm btn-default rounded-0',
+                                query: `page=${res.paging.next}`
+                            }
+
+                            if (param && param !== null) {
+                                let paramArr = param.split('&')
+
+                                paramArr.forEach((val, i) => {
+                                    if (!val.includes('page')) {
+                                        navPrev.query += `&${val}`
+                                        navNext.query += `&${val}`
+                                    }
+                                })
+                            }
+
+                            if (res.paging.current == res.paging.first) {
+                                navPrev.class += ' disabled'
+                            }
+
+                            if (res.paging.current == res.paging.last) {
+                                navNext.class += ' disabled'
+                            }
+
+                            tableNav.html(`
+                                <button type="button" class="${navPrev.class}" data-query="${navPrev.query}">Prev</button>
+                                <button type="button" class="${navNext.class}" data-query="${navNext.query}">Next</button>
+                            `)
+                        }
+
+                        return
+                    }
+                }
+
+                tableBody.html(`<tr><td colspan="4" class="text-nowrap text-center">No data found</td></tr>`)
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                console.log(jqXHR.status + '|' + textStatus + '|' + errorThrown)
+                tableBody.html(`<tr><td colspan="4" class="text-nowrap text-center">No data found</td></tr>`)
+            }
+        })
+    }
+
+    function loadCurrentSales() {
+        $('#groupProduct input').each((e, el) => {
+            el.value = null
+        })
+
+        let tableProducts = $('#tableProducts tbody')
+        let subtotal = 0
+
+        tableProducts.empty()
+
+        if (currentSales.products.length > 0) {
+            currentSales.products.map((row, i) => {
+                tableProducts.append(`<tr>
+                    <td class="text-nowrap">${++i}</td>
+                    <td class="text-nowrap">${row.sku}</td>
+                    <td class="text-nowrap">${row.name} - ${row.product_category} / ${row.product_unit}</td>
+                    <td class="text-nowrap">${row.sell_price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+                    <td class="text-nowrap">${row.qty}</td>
+                    <td class="text-nowrap">${row.discount.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+                    <td class="text-nowrap">${row.total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+                    <td class="text-nowrap">
+                        <button type="button" class="btn btn-sm btn-warning rounded-0 btn-detail" title="detail" onClick="detailData(${row.id})">
+                            <i class="fas fa-edit fa-fw"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger rounded-0 btn-delete" title="delete" onClick="deleteData(${row.id})">
+                            <i class="far fa-trash-alt fa-fw"></i>
+                        </button>
+                    </td>
+                </tr>`)
+
+                subtotal += parseInt(row.total)
+            })
+
+            currentSales.summaries.subtotal = subtotal
+        } else {
+            tableProducts.html('<tr><td colspan="8">No data found</td></tr>')
+        }
+
+        currentSales.summaries.total = currentSales.summaries.subtotal - currentSales.summaries.discount
+
+        Object.keys(currentSales.summaries).forEach((key) => {
+            $(`#groupSummaries input[name="${key}"]`).val(currentSales.summaries[key]).trigger('change')
+        })
+
+        getSalesInvoice()
+    }
+
+    $(document).ready(() => {
+        let windowWidth = $(window).width()
+
+        if (windowWidth >= 768) {
+            $('.section-top .card').sameHeight()
+            $('.row .same-height').sameHeight()
+        }
+
+        $(window).resize((e) => {
+            windowWidth = e.currentTarget.outerWidth
+
+            if (windowWidth >= 768) {
+                $('.section-top .card').sameHeight()
+                $('.row .same-height').sameHeight()
+            } else {
+                $('.section-top .card').css('height','auto')
+                $('.row .same-height').css('height','auto')
+            }
+        })
+
+        $('#salesDate').datepicker('setDate', moment(new Date()).format('YYYY-MM-DD'))
+
+        currentSales.products = [
+            {
+                "id": 1,
+                "name": "Ziga",
+                "sku": "8991912151046",
+                "buy_price": "125000",
+                "sell_price": "130000",
+                "product_category_id": 2,
+                "product_unit_id": 1,
+                "note": "rokok ziga per slot",
+                "created_date": null,
+                "created_user_id": null,
+                "updated_date": "2022-07-17 16:43:20",
+                "updated_user_id": 1,
+                "is_active": 1,
+                "product_category": "Rokok",
+                "product_unit": "Slot",
+                "stock": 50,
+                "created_user": null,
+                "updated_user": "Dionisius Lumrang Gesangie",
+                "qty": "30",
+                "total": 3900000,
+                "discount": 0
+            }
+        ]
+
+        loadCurrentSales()
+    })
+
+    function getSalesInvoice() {
+        let requestUrl = `<%= currentUrl %>/invoice`
+
+        $.ajax({
+            url: requestUrl,
+            type: 'get',
+            dataType: 'json',
+            beforeSend: () => {
+                $('#salesInvoice').html('Please wait...')
+            },
+            success: (res) => {
+                $('#salesInvoice').html(res)
+                currentSales.invoice = res
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                $('#salesInvoice').empty()
+            }
+        })
+    }
+</script>

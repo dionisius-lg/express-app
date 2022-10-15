@@ -6,8 +6,9 @@ const config = require('../configs')
 const { isEmpty } = require('../helpers/common')
 
 exports.dashboard = (req, res, next) => {
+    console.log(`${currentPath}/dashboard`)
     return res.render('adminLayout', {
         view: `${currentPath}/dashboard`,
-        pageTitle: 'Dashboard',
+        title: 'Dashboard',
     })
 }

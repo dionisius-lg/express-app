@@ -3,18 +3,22 @@ const { success, error } = require('../helpers/response')
 const table = 'product_categories'
 
 exports.getAll = async (conditions) => {
+    if (conditions.is_active === undefined) {
+        conditions.is_active = 1
+    }
+
     const conditionTypes = {
-        'like': ['name']
+        'like': ['name', 'sku']
     }
 
     let customConditions = []
 
     if (conditions.created_user != undefined) {
-        customConditions.push(`created_user.id = ${conditions.created_user}`)
+        customConditions.push(`created_user.fullname = ${conditions.created_user}`)
     }
 
     if (conditions.updated_user != undefined) {
-        customConditions.push(`updated_user.id = ${conditions.updated_user}`)
+        customConditions.push(`updated_user.fullname = ${conditions.updated_user}`)
     }
 
     const customColumns = [
@@ -41,6 +45,10 @@ exports.getAll = async (conditions) => {
 }
 
 exports.getDetail = async (conditions) => {
+    if (conditions.is_active === undefined) {
+        conditions.is_active = 1
+    }
+
     let customConditions = []
 
     const customColumns = [
@@ -64,6 +72,17 @@ exports.getDetail = async (conditions) => {
     }
 
     return error({message: "Data not found"})
+}
+
+exports.insert = async (data) => {
+    const protectedColumns = ['id']
+    const result = await insertData({ table, data, protectedColumns })
+
+    if (result.total_data > 0) {
+        return success(result)
+    }
+
+    return error({message: "Bad request"})
 }
 
 exports.update = async (data, conditions) => {

@@ -3,6 +3,14 @@ const { success, error } = require('../helpers/response')
 const table = 'stocks'
 
 exports.getAll = async (conditions) => {
+    if (conditions.is_active === undefined) {
+        conditions.is_active = 1
+    }
+
+    const conditionTypes = {
+        'like': ['name']
+    }
+
     let customConditions = []
 
     if (conditions.product != undefined) {
@@ -17,10 +25,6 @@ exports.getAll = async (conditions) => {
         customConditions.push(`suppliers.name Like '%${conditions.supplier}%'`)
     }
 
-    const conditionTypes = {
-        'like': ['name']
-    }
-
     const columnDeselect = [
         'stocked_date',
     ]
@@ -32,6 +36,8 @@ exports.getAll = async (conditions) => {
             ELSE NULL END) AS stock_type`,
         `products.name AS product`,
         `products.sku AS sku`,
+        `product_categories.name AS product_category`,
+        `product_units.name AS product_unit`,
         `suppliers.name AS supplier`,
         `DATE_FORMAT(${table}.stocked_date, "%Y-%m-%d") AS stocked_date`,
         `((SELECT IFNULL(SUM(si.qty), 0) FROM stocks AS si
@@ -44,6 +50,8 @@ exports.getAll = async (conditions) => {
 
     const join = [
         `LEFT JOIN products ON products.id = ${table}.product_id`,
+        `LEFT JOIN product_categories ON product_categories.id = products.product_category_id`,
+        `LEFT JOIN product_units ON product_units.id = products.product_unit_id`,
         `LEFT JOIN suppliers ON suppliers.id = ${table}.supplier_id`,
         `LEFT JOIN users AS created_user ON created_user.id = ${table}.created_user_id`,
         `LEFT JOIN users AS updated_user ON updated_user.id = ${table}.updated_user_id`,
@@ -63,6 +71,10 @@ exports.getAll = async (conditions) => {
 }
 
 exports.getDetail = async (conditions) => {
+    if (conditions.is_active === undefined) {
+        conditions.is_active = 1
+    }
+
     let customConditions = []
 
     const columnDeselect = [
@@ -76,6 +88,8 @@ exports.getDetail = async (conditions) => {
             ELSE NULL END) AS stock_type`,
         `products.name AS product`,
         `products.sku AS sku`,
+        `product_categories.name AS product_category`,
+        `product_units.name AS product_unit`,
         `suppliers.name AS supplier`,
         `DATE_FORMAT(${table}.stocked_date, "%Y-%m-%d") AS stocked_date`,
         `((SELECT IFNULL(SUM(si.qty), 0) FROM stocks AS si
@@ -88,6 +102,8 @@ exports.getDetail = async (conditions) => {
 
     const join = [
         `LEFT JOIN products ON products.id = ${table}.product_id`,
+        `LEFT JOIN product_categories ON product_categories.id = products.product_category_id`,
+        `LEFT JOIN product_units ON product_units.id = products.product_unit_id`,
         `LEFT JOIN suppliers ON suppliers.id = ${table}.supplier_id`,
         `LEFT JOIN users AS created_user ON created_user.id = ${table}.created_user_id`,
         `LEFT JOIN users AS updated_user ON updated_user.id = ${table}.updated_user_id`,

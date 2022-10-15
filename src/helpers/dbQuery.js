@@ -578,3 +578,100 @@ exports.deleteData = ({ table = '', conditions = {}, cacheKeys = [] }) => {
         })
     })
 }
+
+/**
+ * Multiple INSERT query.
+ * @param  {string} table - Table's name
+ * @param  {Array.<Object>} data - Data to insert. @example [{columnName: 'newValueA'}, {columnName: 'newValueB'}]
+ * @param  {string[]} protectedColumns - Columns to be ignore for insert statement. @example ['columnA', 'columnB']
+ * @param  {string[]} cacheKeys - Redis key to be remove. @example {'keyTableA', 'keyTableB'}
+ * @returns {Promise.<Object.<string, number|boolean|Object>>} - data result
+ */
+ exports.insertManyData = ({ table = '', data = {}, protectedColumns = [], cacheKeys = [] }) => {
+    return new Promise(async (resolve, reject) => {
+        let res      = { total_data: 0, data: false }
+        let timeChar = ['CURRENT_TIMESTAMP()', 'NOW()']
+        let nullChar = ['NULL']
+
+        // if data invalid object
+        if (!_.isObjectLike(data) || _.isEmpty(data) || data.length === undefined) {
+            return resolve(res)
+        }
+
+        // get table columns
+        const columns = await this.checkColumn({ table })
+        // compare fields from data with columns
+        const diff = _.difference(data[0], columns)
+
+        // if there are invalid fields/columns
+        if (!_.isEmpty(diff)) {
+            return resolve(res)
+        }
+
+        // remove invalid data
+        filterHelper.data(data[0])
+        const keys = Object.keys(data[0])
+
+        // if key data empty
+        if (_.isEmpty(keys)) {
+            return resolve(res)
+        }
+
+        // check protected columns on submitted data
+        const forbiddenColumns = _.intersection(protectedColumns, keys)
+
+        if (!_.isEmpty(forbiddenColumns)) {
+            return resolve(res)
+        }
+
+        const column = keys.join(', ')
+
+        let query   = `INSERT INTO ${table} (${column}) VALUES ?`
+        let values  = []
+        let tempVal = []
+
+        for (key in data) {
+            // if 'key' and 'data order' on each object not the same
+            if (!_.isEqual(keys, Object.keys(data[key]))) {
+                return resolve(res)
+            }
+
+            tempVal = Object.keys(data[key]).map(k => {
+                let dataVal = ''
+
+                if (typeof data[key][k] !== undefined) {
+                    dataVal = _.trim(data[key][k])
+
+                    if (_.indexOf(timeChar, _.toUpper(dataVal)) >= 0) {
+                        let dataVal = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+                    }
+
+                    if (_.indexOf(nullChar, _.toUpper(dataVal)) >= 0) {
+                        dataVal = null
+                    }
+                } else {
+                    dataVal = null
+                }
+
+                return dataVal
+            })
+
+            values.push(tempVal)
+        }
+
+        conn.query(query, [values], (err, results, fields) => {
+            if (err) {
+                // throw err
+                console.error(err)
+                return resolve(res)
+            }
+
+            res = {
+                total_data: results.affectedRows,
+                data: data
+            }
+
+            resolve(res)
+        })
+    })
+}

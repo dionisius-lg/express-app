@@ -55,7 +55,7 @@ exports.index = async (req, res, next) => {
 
     return res.render('adminLayout', {
         view: `${currentPath}`,
-        pageTitle: 'Stock Out',
+        title: 'Stock Out',
         ...result
     })
 }
@@ -75,13 +75,9 @@ exports.create = async (req, res, next) => {
 
     Object.keys(body).forEach(key => {
         if (['product', 'sku', 'stock'].includes(body)) {
-            delete query[key]
+            delete body[key]
         }
     })
-
-    if (!('is_active' in body)) {
-        body.is_active = '1'
-    }
 
     body.stock_type_id = 2
     body.created_user_id = req.session.user.id
@@ -101,13 +97,9 @@ exports.update = async (req, res, next) => {
 
     Object.keys(body).forEach(key => {
         if (['product', 'sku', 'stock'].includes(body)) {
-            delete query[key]
+            delete body[key]
         }
     })
-
-    if (!('is_active' in body)) {
-        body.is_active = '0'
-    }
 
     body.stock_type_id = 2
     body.updated_user_id = req.session.user.id
@@ -126,10 +118,12 @@ exports.update = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
     const { params } = req
+    const data = {
+        is_active: '0'   
+    }
 
-    const result = await stocksModel.delete({
-        id: params.id,
-        stock_type_id: 2
+    const result = await stocksModel.update(data, {
+        id: params.id
     })
 
     if (result.success) {

@@ -3,8 +3,12 @@ const { success, error } = require('../helpers/response')
 const table = 'suppliers'
 
 exports.getAll = async (conditions) => {
+    if (conditions.is_active === undefined) {
+        conditions.is_active = 1
+    }
+
     const conditionTypes = {
-        'like': ['name']
+        'like': ['name', 'phone', 'email']
     }
 
     let customConditions = []
@@ -33,6 +37,10 @@ exports.getAll = async (conditions) => {
 }
 
 exports.getDetail = async (conditions) => {
+    if (conditions.is_active === undefined) {
+        conditions.is_active = 1
+    }
+
     let customConditions = []
 
     const customColumns = [

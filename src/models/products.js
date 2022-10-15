@@ -3,21 +3,15 @@ const { success, error } = require('../helpers/response')
 const table = 'products'
 
 exports.getAll = async (conditions) => {
-    let customConditions = []
-
-    if (conditions.sku_product !== undefined) {
-        customConditions.push(`(${table}.sku LIKE '%${conditions.sku_product}%' OR ${table}.name LIKE '%${conditions.sku_product}%')`)
-        delete conditions.sku_product
-    }
-
-    if (conditions.like_sku != undefined) {
-        customConditions.push(`${table}.sku Like '%${conditions.like_sku}%'`)
-        delete conditions.like_sku
+    if (conditions.is_active === undefined) {
+        conditions.is_active = 1
     }
 
     const conditionTypes = {
-        'like': ['name']
+        'like': ['sku', 'name']
     }
+
+    let customConditions = []
 
     const customColumns = [
         `product_categories.name AS product_category`,
@@ -58,6 +52,10 @@ exports.getAll = async (conditions) => {
 }
 
 exports.getDetail = async (conditions) => {
+    if (conditions.is_active === undefined) {
+        conditions.is_active = 1
+    }
+
     let customConditions = []
 
     const customColumns = [
