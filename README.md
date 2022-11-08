@@ -2,7 +2,7 @@
 
 Web based Simple Express Point of Sales
 
-This project was bootstrapped with [Express](https://github.com/expressjs/express).
+This project was bootstrapped with [ExpressJs](https://github.com/expressjs/express).
 
 ## Installation
 
